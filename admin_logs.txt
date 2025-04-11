@@ -1,0 +1,62 @@
+Apr 08, 2025 6:40:23 PM dsms.DsmsServer addShare
+INFO: Added 50 shares of NYKE010425 to EQUITY
+Apr 08, 2025 6:49:32 PM dsms.DsmsServer listShareAvailability
+INFO: Sent share availability for EQUITY
+Apr 08, 2025 7:19:11 PM dsms.DsmsServer addShare
+INFO: Added 100 shares of NYKE010425 to EQUITY
+Apr 08, 2025 7:19:23 PM dsms.DsmsServer listShareAvailability
+INFO: Sent share availability for EQUITY
+Apr 08, 2025 7:38:37 PM dsms.DsmsServer addShare
+INFO: Added 100 shares of NYKE010425 to EQUITY
+Apr 08, 2025 7:38:44 PM dsms.DsmsServer listShareAvailability
+INFO: Sent share availability for EQUITY
+Apr 08, 2025 7:43:45 PM dsms.DsmsServer addShare
+INFO: Added 100 shares of NYKE010425 to EQUITY
+Apr 08, 2025 7:44:07 PM dsms.DsmsServer listShareAvailability
+INFO: Sent share availability for EQUITY
+Apr 08, 2025 8:08:59 PM dsms.DsmsServer addShare
+INFO: Added 100 shares of NYKE010425 to EQUITY
+Apr 08, 2025 8:09:05 PM dsms.DsmsServer listShareAvailability
+INFO: Sent share availability for EQUITY
+Apr 08, 2025 8:10:04 PM dsms.DsmsServer listShareAvailability
+INFO: Sent share availability for EQUITY
+Apr 08, 2025 8:37:05 PM dsms.DsmsServer addShare
+INFO: Added 100 shares of NYKE010425 to EQUITY
+Apr 08, 2025 8:37:17 PM dsms.DsmsServer listShareAvailability
+INFO: Sent share availability for EQUITY
+Apr 08, 2025 8:38:11 PM dsms.DsmsServer listShareAvailability
+INFO: Sent share availability for EQUITY
+Apr 08, 2025 8:38:19 PM dsms.DsmsServer addShare
+INFO: Added 100 shares of NYKE010426 to EQUITY
+Apr 08, 2025 8:41:51 PM dsms.DsmsServer listShareAvailability
+INFO: Sent share availability for EQUITY
+Apr 08, 2025 8:48:45 PM dsms.DsmsServer addShare
+INFO: Added 100 shares of NYKE010425 to EQUITY
+Apr 08, 2025 8:48:50 PM dsms.DsmsServer listShareAvailability
+INFO: Sent share availability for EQUITY
+Apr 08, 2025 8:49:19 PM dsms.DsmsServer addShare
+INFO: Added 100 shares of NYKE010426 to EQUITY
+Apr 08, 2025 8:49:28 PM dsms.DsmsServer listShareAvailability
+INFO: Sent share availability for EQUITY
+Apr 08, 2025 8:58:28 PM dsms.DsmsServer addShare
+INFO: Added 100 shares of NYKE010425 to EQUITY
+Apr 08, 2025 8:58:36 PM dsms.DsmsServer listShareAvailability
+INFO: Sent share availability for EQUITY
+Apr 08, 2025 8:59:09 PM dsms.DsmsServer addShare
+INFO: Added 100 shares of NYKE010426 to EQUITY
+Apr 08, 2025 8:59:20 PM dsms.DsmsServer listShareAvailability
+INFO: Sent share availability for EQUITY
+Apr 08, 2025 9:00:58 PM dsms.DsmsServer removeShare
+INFO: Removed share: NYKE010425
+Apr 08, 2025 9:01:07 PM dsms.DsmsServer listShareAvailability
+INFO: Sent share availability for EQUITY
+Apr 08, 2025 9:01:15 PM dsms.DsmsServer addShare
+INFO: Added 100 shares of NYKE010425 to EQUITY
+Apr 08, 2025 10:14:24 PM dsms.DsmsServer addShare
+INFO: Added 100 shares of NYKE010425 to EQUITY
+Apr 08, 2025 10:16:19 PM dsms.DsmsServer listShareAvailability
+INFO: Sent share availability for EQUITY
+Apr 08, 2025 10:16:57 PM dsms.DsmsServer listShareAvailability
+INFO: Sent share availability for EQUITY
+Apr 08, 2025 10:17:17 PM dsms.DsmsServer addShare
+INFO: Added 100 shares of NYKE010426 to EQUITY

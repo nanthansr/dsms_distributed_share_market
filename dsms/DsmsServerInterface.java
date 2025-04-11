@@ -1,0 +1,29 @@
+package dsms;
+
+import javax.jws.WebService;
+import javax.jws.WebMethod;
+
+@WebService(targetNamespace = "http://dsms/")
+public interface DsmsServerInterface {
+
+    @WebMethod
+    String addShare(String shareType, String shareID, int quantity);
+
+    @WebMethod
+    String removeShare(String shareType, String shareID);
+
+    @WebMethod
+    String listShareAvailability(String shareType);
+
+    @WebMethod
+    String getShares(String buyerID);
+
+    @WebMethod
+    String sellShare(String buyerID, String shareID, int quantity);
+
+    @WebMethod
+    String purchaseShare(String buyerID, String shareID, String shareType, int quantity);
+
+    @WebMethod
+    String swapShares(String buyerID, String oldShareID, String oldShareType, String newShareID, String newShareType);
+}

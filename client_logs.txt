@@ -1,0 +1,18 @@
+Apr 08, 2025 6:50:15 PM dsms.DsmsServer purchaseShare
+INFO: NYKB1000 purchased 3 of NYKE010425
+Apr 08, 2025 7:19:30 PM dsms.DsmsServer purchaseShare
+INFO: NYKB1000 purchased 3 of NYKE010425
+Apr 08, 2025 7:38:51 PM dsms.DsmsServer purchaseShare
+INFO: NYKB1000 purchased 3 of NYKE010425
+Apr 08, 2025 7:44:14 PM dsms.DsmsServer purchaseShare
+INFO: NYKB1000 purchased 3 of NYKE010425
+Apr 08, 2025 8:09:11 PM dsms.DsmsServer purchaseShare
+INFO: NYKB1000 purchased 3 of NYKE010425
+Apr 08, 2025 8:37:27 PM dsms.DsmsServer purchaseShare
+INFO: NYKB1000 purchased 3 of NYKE010425
+Apr 08, 2025 8:49:01 PM dsms.DsmsServer purchaseShare
+INFO: NYKB1000 purchased 3 of NYKE010425
+Apr 08, 2025 8:58:43 PM dsms.DsmsServer purchaseShare
+INFO: NYKB1000 purchased 3 of NYKE010425
+Apr 08, 2025 10:16:27 PM dsms.DsmsServer purchaseShare
+INFO: NYKB1000 purchased 3 of NYKE010425

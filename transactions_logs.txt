@@ -1,0 +1,38 @@
+Apr 08, 2025 6:51:53 PM dsms.DsmsServer getShares
+INFO: Got shares for NYKB1000 at NY
+Apr 08, 2025 6:52:20 PM dsms.DsmsServer getShares
+INFO: Got shares for NYKB1000 at NY
+Apr 08, 2025 7:19:40 PM dsms.DsmsServer getShares
+INFO: Got shares for NYKB1000 at NY
+Apr 08, 2025 7:38:58 PM dsms.DsmsServer getShares
+INFO: Got shares for NYKB1000 at NY
+Apr 08, 2025 7:44:24 PM dsms.DsmsServer getShares
+INFO: Got shares for NYKB1000 at NY
+Apr 08, 2025 8:09:17 PM dsms.DsmsServer getShares
+INFO: Got shares for NYKB1000 at NY
+Apr 08, 2025 8:09:24 PM dsms.DsmsServer sellShare
+INFO: NYKB1000 sold 1 NYKE010425
+Apr 08, 2025 8:09:37 PM dsms.DsmsServer getShares
+INFO: Got shares for NYKB1000 at NY
+Apr 08, 2025 8:37:32 PM dsms.DsmsServer getShares
+INFO: Got shares for NYKB1000 at NY
+Apr 08, 2025 8:37:43 PM dsms.DsmsServer sellShare
+INFO: NYKB1000 sold 1 NYKE010425
+Apr 08, 2025 8:38:02 PM dsms.DsmsServer getShares
+INFO: Got shares for NYKB1000 at NY
+Apr 08, 2025 8:49:06 PM dsms.DsmsServer getShares
+INFO: Got shares for NYKB1000 at NY
+Apr 08, 2025 8:49:12 PM dsms.DsmsServer sellShare
+INFO: NYKB1000 sold 1 NYKE010425
+Apr 08, 2025 8:58:50 PM dsms.DsmsServer getShares
+INFO: Got shares for NYKB1000 at NY
+Apr 08, 2025 8:59:00 PM dsms.DsmsServer sellShare
+INFO: NYKB1000 sold 1 NYKE010425
+Apr 08, 2025 8:59:25 PM dsms.DsmsServer getShares
+INFO: Got shares for NYKB1000 at NY
+Apr 08, 2025 9:01:40 PM dsms.DsmsServer getShares
+INFO: Got shares for NYKB1000 at NY
+Apr 08, 2025 10:16:33 PM dsms.DsmsServer getShares
+INFO: Got shares for NYKB1000 at NY
+Apr 08, 2025 10:16:42 PM dsms.DsmsServer sellShare
+INFO: NYKB1000 sold 1 NYKE010425
