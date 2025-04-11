@@ -26,4 +26,10 @@ public interface DsmsServerInterface {
 
     @WebMethod
     String swapShares(String buyerID, String oldShareID, String oldShareType, String newShareID, String newShareType);
+    //  NEW: Replica State Sync Methods
+    @WebMethod
+    String getSystemState();
+
+    @WebMethod
+    void syncSystemState(String serializedState);
 }

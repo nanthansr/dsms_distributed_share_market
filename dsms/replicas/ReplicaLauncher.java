@@ -9,6 +9,12 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.nio.charset.StandardCharsets;
 import java.util.concurrent.ConcurrentHashMap;
+import java.net.URL;
+import javax.xml.namespace.QName;
+import javax.xml.ws.Service;
+
+import dsms.DsmsServerInterface;
+
 
 public class ReplicaLauncher {
     private static final ConcurrentHashMap<Integer, String> requestLog = new ConcurrentHashMap<>();
@@ -27,6 +33,18 @@ public class ReplicaLauncher {
         String serviceURL = "http://localhost:" + getServicePort(city, replicaId) + "/dsms/" + city.toLowerCase();
         DsmsServerInterface serverImpl = new DsmsServer(city);
         Endpoint.publish(serviceURL, serverImpl);
+        try {
+            String sourceWsdl = "http://localhost:8010/dsms/ny?wsdl";
+            QName qname = new QName("http://dsms/", "DsmsServerService");
+            Service syncService = Service.create(new URL(sourceWsdl), qname);
+            DsmsServerInterface source = syncService.getPort(DsmsServerInterface.class);
+            String encoded = source.getSystemState();
+            serverImpl.syncSystemState(encoded);
+            System.out.println("[SYNC] Successfully synced state from " + sourceWsdl);
+        } catch (Exception e) {
+            System.out.println("[SYNC INFO] No available source to sync from. Starting fresh.");
+        }
+
         System.out.println("Replica for " + city + " launched at " + serviceURL);
 
         // Start listening to UDP from Sequencer
@@ -120,6 +138,9 @@ public class ReplicaLauncher {
                 break;
             case "TOK":
                 basePort = 8200;
+                break;
+            case "NYK":
+                basePort = 8000;
                 break;
             default:
                 basePort = 8300;

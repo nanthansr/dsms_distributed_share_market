@@ -1,6 +1,8 @@
 package dsms;
 
 import dsms.LoggerUtility;
+import java.io.*;
+import java.util.Base64;
 
 import javax.jws.WebService;
 import javax.xml.namespace.QName;
@@ -431,5 +433,50 @@ public class DsmsServer implements DsmsServerInterface {
         }
         return 0;
     }
+
+    @Override
+    public String getSystemState() {
+        try {
+            Map<String, Object> state = new HashMap<>();
+            state.put("shareDatabase", shareDatabase);
+            state.put("buyerShares", buyerShares);
+            state.put("buyerPurchaseHistory", buyerPurchaseHistory);
+            return Base64.getEncoder().encodeToString(serialize(state));
+        } catch (Exception e) {
+            return "ERROR:STATE_SERIALIZATION_FAILED";
+        }
+    }
+
+    @Override
+    public void syncSystemState(String serializedState) {
+        try {
+            Map<String, Object> state = (Map<String, Object>) deserialize(Base64.getDecoder().decode(serializedState));
+
+            shareDatabase.clear();
+            buyerShares.clear();
+            buyerPurchaseHistory.clear();
+
+            shareDatabase.putAll((Map<String, Map<String, Integer>>) state.get("shareDatabase"));
+            buyerShares.putAll((Map<String, List<String>>) state.get("buyerShares"));
+            buyerPurchaseHistory.putAll((Map<String, Map<LocalDate, Integer>>) state.get("buyerPurchaseHistory"));
+
+        } catch (Exception e) {
+            System.out.println("[SYNC ERROR] Failed to restore system state.");
+        }
+    }
+
+    private byte[] serialize(Object obj) throws IOException {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        ObjectOutputStream oos = new ObjectOutputStream(baos);
+        oos.writeObject(obj);
+        return baos.toByteArray();
+    }
+
+    private Object deserialize(byte[] data) throws IOException, ClassNotFoundException {
+        ByteArrayInputStream bais = new ByteArrayInputStream(data);
+        ObjectInputStream ois = new ObjectInputStream(bais);
+        return ois.readObject();
+    }
+
 
 }
