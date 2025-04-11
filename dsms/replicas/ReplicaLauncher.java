@@ -8,6 +8,8 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.net.URL;
 import javax.xml.namespace.QName;
@@ -33,15 +35,31 @@ public class ReplicaLauncher {
         String serviceURL = "http://localhost:" + getServicePort(city, replicaId) + "/dsms/" + city.toLowerCase();
         DsmsServerInterface serverImpl = new DsmsServer(city);
         Endpoint.publish(serviceURL, serverImpl);
-        try {
-            String sourceWsdl = "http://localhost:8010/dsms/ny?wsdl";
-            QName qname = new QName("http://dsms/", "DsmsServerService");
-            Service syncService = Service.create(new URL(sourceWsdl), qname);
-            DsmsServerInterface source = syncService.getPort(DsmsServerInterface.class);
-            String encoded = source.getSystemState();
-            serverImpl.syncSystemState(encoded);
-            System.out.println("[SYNC] Successfully synced state from " + sourceWsdl);
-        } catch (Exception e) {
+
+        // 🔄 Dynamic failover sync logic, excluding self
+        List<String> replicaWsdlList = new ArrayList<>();
+        if (!replicaId.equalsIgnoreCase("RM1")) replicaWsdlList.add("http://localhost:8010/dsms/ny?wsdl");
+        if (!replicaId.equalsIgnoreCase("RM2")) replicaWsdlList.add("http://localhost:8020/dsms/ny?wsdl");
+        if (!replicaId.equalsIgnoreCase("RM3")) replicaWsdlList.add("http://localhost:8030/dsms/ny?wsdl");
+
+        boolean synced = false;
+        for (String wsdl : replicaWsdlList) {
+            try {
+                System.out.println("[SYNC] Dynamically searching for active replicas to sync state ");
+                QName qname = new QName("http://dsms/", "DsmsServerService");
+                Service syncService = Service.create(new URL(wsdl), qname);
+                DsmsServerInterface source = syncService.getPort(DsmsServerInterface.class);
+                String encoded = source.getSystemState();
+                serverImpl.syncSystemState(encoded);
+                System.out.println("[SYNC] Successfully synced from: " + wsdl);
+                synced = true;
+                break;
+            } catch (Exception e) {
+                System.out.println("[SYNC] Failed to sync from: " + wsdl);
+            }
+        }
+
+        if (!synced) {
             System.out.println("[SYNC INFO] No available source to sync from. Starting fresh.");
         }
 
