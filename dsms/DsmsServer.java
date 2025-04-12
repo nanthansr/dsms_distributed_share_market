@@ -180,7 +180,7 @@ public class DsmsServer implements DsmsServerInterface {
         List<String> buyerShareList = buyerShares.get(buyerID);
 
         if (buyerShareList == null || buyerShareList.isEmpty()) {
-            return "No shares found for " + buyerID + ".";
+            return "No shares found for " + buyerID + " in " + cityCode;
         }
 
         if (buyerShareList.isEmpty()) {
@@ -314,7 +314,8 @@ public class DsmsServer implements DsmsServerInterface {
             // Step 5: Sell the old share
             String sellResponse = sellShare(buyerID, oldShareID, ownedQuantity);
             if (!sellResponse.contains("Successfully")) {
-                queryRemoteServer(newShareCity, "cancelReservation", newShareID, String.valueOf(ownedQuantity));
+                // queryRemoteServer(newShareCity, "cancelReservation", newShareID,
+                // String.valueOf(ownedQuantity));
                 return "Error: Could not sell old share, swap aborted.";
             }
 
@@ -367,6 +368,9 @@ public class DsmsServer implements DsmsServerInterface {
 
     private String queryRemoteServer(String cityCode, String method, String... params) throws Exception {
         String wsdlUrl = getWsdlUrl(cityCode);
+        if (cityCode == null) {
+            return "Error: Unknown or unsupported city code '" + cityCode + "'";
+        }
         System.out.println("DEBUG: Querying " + cityCode + " at " + wsdlUrl + " for " + method);
         try {
             URL url = new URL(wsdlUrl);
@@ -375,6 +379,10 @@ public class DsmsServer implements DsmsServerInterface {
             DsmsServerInterface remoteServer = service.getPort(DsmsServerInterface.class);
 
             switch (method) {
+                case "reassignShare":
+                    return remoteServer.reassignShare(params[0], params[1], params[2]);
+                case "getShareQuantity":
+                    return String.valueOf(remoteServer.getShareQuantity(params[0], params[1]));
                 case "getShares":
                     return remoteServer.getShares(params[0]);
                 case "listShareAvailability":
@@ -390,12 +398,14 @@ public class DsmsServer implements DsmsServerInterface {
             }
         } catch (Exception e) {
             System.err.println("DEBUG: Connection failed for " + wsdlUrl + ": " + e.getMessage());
+            e.printStackTrace();
             return "Error: Unable to connect to remote server.";
         }
     }
 
     // reassigns a share to its original local market : part of the sellShare method
-    private String reassignShare(String shareID, String shareType, String quantityStr) {
+    @Override
+    public String reassignShare(String shareID, String shareType, String quantityStr) {
         int quantity = Integer.parseInt(quantityStr);
         shareDatabase.get(shareType).put(shareID, shareDatabase.get(shareType).getOrDefault(shareID, 0) + quantity);
         return "Successfully reassigned " + quantity + " shares of " + shareID + " to the market.";
@@ -403,24 +413,34 @@ public class DsmsServer implements DsmsServerInterface {
 
     // gets the quantity of a share in the local database : part of the
     // purchaseShare method
-    private String getShareQuantity(String shareID, String shareType) {
-        return String.valueOf(
-                shareDatabase.getOrDefault(shareType, new ConcurrentHashMap<>())
-                        .getOrDefault(shareID, 0));
+    @Override
+    public int getShareQuantity(String shareID, String shareType) {
+        return shareDatabase.getOrDefault(shareType, new ConcurrentHashMap<>())
+                .getOrDefault(shareID, 0);
     }
 
-    // reserves a share for a buyer : part of the swapShares method
-    private String reserveShare(String shareID, String quantity) {
-        return "Share " + shareID + " reserved.";
-    }
+    // // reserves a share for a buyer : part of the swapShares method
+    // @Override
+    // public String reserveShare(String shareID, String quantity) {
+    // return "Share " + shareID + " reserved.";
+    // }
 
-    private String cancelReservation(String shareID) {
-        return "Reservation for share " + shareID + " cancelled.";
-    }
+    // @Override
+    // public String cancelReservation(String shareID) {
+    // return "Reservation for share " + shareID + " cancelled.";
+    // }
 
     private String getWsdlUrl(String cityCode) {
-        return "http://localhost:808" + (cityCode.equals("NYK") ? "1" : "2") + "/DSMS?wsdl"; // NYK -> 8081, LON ->
-                                                                                             // 8082, etc.
+        switch (cityCode.toUpperCase()) {
+            case "NYK":
+                return "http://localhost:8010/dsms/nyk?wsdl";
+            case "LON":
+                return "http://localhost:8120/dsms/lon?wsdl";
+            case "TOK":
+                return "http://localhost:8230/dsms/tok?wsdl";
+            default:
+                return null;
+        }
     }
 
     private int extractAvailableQuantity(String availabilityResponse, String targetShareID) {
@@ -477,6 +497,5 @@ public class DsmsServer implements DsmsServerInterface {
         ObjectInputStream ois = new ObjectInputStream(bais);
         return ois.readObject();
     }
-
 
 }
