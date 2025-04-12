@@ -34,15 +34,14 @@ The system ensures continuous availability and correctness in the presence of fa
 javac dsms/**/*.java dsms/*.java
 ```
 
-### Execution (Use separate terminal windows)
+### Manual Execution (Use separate terminal windows)
 
 #### Terminal 1: Start Replicas
 
 ```bash
-java dsms.replicas.ReplicaLauncher NY RM1
-java dsms.replicas.ReplicaLauncher NY RM2
-java dsms.replicas.ReplicaLauncher NY RM3
-java dsms.replicas.ReplicaLauncher NY RM4
+java dsms.replicas.ReplicaLauncher NYK RM1
+java dsms.replicas.ReplicaLauncher NYK RM2
+java dsms.replicas.ReplicaLauncher NYK RM3
 ```
 
 #### Terminal 2: Start Sequencer
@@ -86,10 +85,50 @@ removeShare:NYKE010425 EQUITY
 
 ---
 
+## 🖥️ Automation Scripts (macOS/Linux)
+
+### 🔁 `run_all.sh`
+Launches the full system:
+- 3 Replicas (NYK RM1–RM3)
+- Sequencer
+- Replica Manager
+- FrontEnd
+- Optionally executes test commands via `TestClient`
+
+**Usage:**
+```bash
+./run_all.sh                      # Starts everything and waits for manual input
+./run_all.sh test_commands.txt    # Executes commands from file automatically
+```
+
+### 🛑 `kill_all.sh`
+Stops all DSMS components:
+```bash
+./kill_all.sh
+```
+
+### 🧪 `test_commands.txt`
+Example test sequence file used with `run_all.sh`:
+```plaintext
+addShare:EQUITY NYKE010425 100
+listShareAvailability:EQUITY
+purchaseShare:NYKB1000 NYKE010425 EQUITY 3
+getShares:NYKB1000
+sellShare:NYKB1000 NYKE010425 1
+addShare:EQUITY NYKE010426 100
+swapShares:NYKB1000 NYKE010425 EQUITY NYKE010426 EQUITY
+removeShare:NYKE010425 EQUITY
+exit
+```
+
+You can edit `test_commands.txt` to include custom test sequences.
+
+---
+
 ## System Architecture Overview
 
 ```plaintext
-[Client] → [FrontEnd] → [Sequencer] → [Replicas (4x)]
+[Client] → [FrontEnd] → [Sequencer] → [Replicas (3x)]
                                 ↓
                       [Replica Manager (per replica)]
 ```
