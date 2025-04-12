@@ -56,15 +56,15 @@ public class ReplicaManager {
         // You could improve this to use a config or mapping table
         switch (replicaId) {
             case "RM1":
-                return "NY";
+                return "NYK";
             case "RM2":
                 return "LON";
             case "RM3":
                 return "TOK";
             case "RM4":
-                return "NY"; // Assume second NY replica for simplicity
+                return "NYK"; // Assume second NY replica for simplicity
             default:
-                return "NY";
+                return "NYK";
         }
     }
 }

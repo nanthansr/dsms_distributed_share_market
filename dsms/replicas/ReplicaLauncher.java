@@ -17,7 +17,6 @@ import javax.xml.ws.Service;
 
 import dsms.DsmsServerInterface;
 
-
 public class ReplicaLauncher {
     private static final ConcurrentHashMap<Integer, String> requestLog = new ConcurrentHashMap<>();
 
@@ -27,7 +26,7 @@ public class ReplicaLauncher {
             return;
         }
 
-        String city = args[0]; // NY, LON, TOK, etc.
+        String city = args[0]; // NYK, LON, TOK, etc.
         String replicaId = args[1]; // RM1, RM2, etc.
         int udpPort = getUDPPort(city, replicaId);
 
@@ -38,9 +37,12 @@ public class ReplicaLauncher {
 
         // 🔄 Dynamic failover sync logic, excluding self
         List<String> replicaWsdlList = new ArrayList<>();
-        if (!replicaId.equalsIgnoreCase("RM1")) replicaWsdlList.add("http://localhost:8010/dsms/ny?wsdl");
-        if (!replicaId.equalsIgnoreCase("RM2")) replicaWsdlList.add("http://localhost:8020/dsms/ny?wsdl");
-        if (!replicaId.equalsIgnoreCase("RM3")) replicaWsdlList.add("http://localhost:8030/dsms/ny?wsdl");
+        if (!replicaId.equalsIgnoreCase("RM1"))
+            replicaWsdlList.add("http://localhost:8010/dsms/nyk?wsdl");
+        if (!replicaId.equalsIgnoreCase("RM2"))
+            replicaWsdlList.add("http://localhost:8120/dsms/lon?wsdl");
+        if (!replicaId.equalsIgnoreCase("RM3"))
+            replicaWsdlList.add("http://localhost:8240/dsms/tok?wsdl");
 
         boolean synced = false;
         for (String wsdl : replicaWsdlList) {
@@ -148,9 +150,6 @@ public class ReplicaLauncher {
     private static int getServicePort(String city, String replicaId) {
         int basePort;
         switch (city.toUpperCase()) {
-            case "NY":
-                basePort = 8000;
-                break;
             case "LON":
                 basePort = 8100;
                 break;
@@ -171,7 +170,7 @@ public class ReplicaLauncher {
     private static int getUDPPort(String city, String replicaId) {
         int basePort;
         switch (city.toUpperCase()) {
-            case "NY":
+            case "NYK":
                 basePort = 8500;
                 break;
             case "LON":
