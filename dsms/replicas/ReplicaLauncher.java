@@ -38,7 +38,7 @@ public class ReplicaLauncher {
 
         Endpoint.publish(serviceURL, serverImpl);
 
-        // 🔄 Dynamic failover sync logic, excluding self
+        // Dynamic failover sync logic, excluding self
         List<String> replicaWsdlList = new ArrayList<>();
         if (!replicaId.equalsIgnoreCase("RM1"))
             replicaWsdlList.add("http://localhost:8010/dsms/service?wsdl");
@@ -198,11 +198,6 @@ public class ReplicaLauncher {
             default:
                 return 8050;
         }
-    }
-
-    private static void resetReplica(DsmsServer server, String wsdlUrl) {
-        String result = server.resetAndResyncFrom(wsdlUrl);
-        System.out.println("[RESET] " + result);
     }
 
 }

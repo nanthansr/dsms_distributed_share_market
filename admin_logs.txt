@@ -282,3 +282,33 @@ Apr 13, 2025 2:08:57 AM dsms.DsmsServer addShare
 INFO: Added 100 shares of NYKE010426 to EQUITY
 Apr 13, 2025 2:08:57 AM dsms.DsmsServer listShareAvailability
 INFO: Sent share availability for EQUITY
+Apr 13, 2025 1:09:29 PM dsms.DsmsServer addShare
+INFO: Added 100 shares of NYKE010425 to EQUITY
+Apr 13, 2025 1:09:29 PM dsms.DsmsServer addShare
+INFO: Added 100 shares of LONB010426 to BONUS
+Apr 13, 2025 1:09:29 PM dsms.DsmsServer listShareAvailability
+INFO: Sent share availability for EQUITY
+Apr 13, 2025 1:09:29 PM dsms.DsmsServer listShareAvailability
+INFO: Sent share availability for BONUS
+Apr 13, 2025 1:09:29 PM dsms.DsmsServer listShareAvailability
+INFO: Sent share availability for EQUITY
+Apr 13, 2025 1:09:29 PM dsms.DsmsServer listShareAvailability
+INFO: Sent share availability for BONUS
+Apr 13, 2025 1:09:29 PM dsms.DsmsServer addShare
+INFO: Added 100 shares of NYKE010426 to EQUITY
+Apr 13, 2025 1:09:29 PM dsms.DsmsServer listShareAvailability
+INFO: Sent share availability for EQUITY
+Apr 13, 2025 5:22:23 PM dsms.DsmsServer addShare
+INFO: Added 100 shares of NYKE010425 to EQUITY
+Apr 13, 2025 5:22:23 PM dsms.DsmsServer addShare
+INFO: Added 100 shares of LONB010426 to BONUS
+Apr 13, 2025 5:22:23 PM dsms.DsmsServer listShareAvailability
+INFO: Sent share availability for EQUITY
+Apr 13, 2025 5:22:23 PM dsms.DsmsServer listShareAvailability
+INFO: Sent share availability for BONUS
+Apr 13, 2025 5:22:23 PM dsms.DsmsServer listShareAvailability
+INFO: Sent share availability for EQUITY
+Apr 13, 2025 5:22:23 PM dsms.DsmsServer listShareAvailability
+INFO: Sent share availability for BONUS
+Apr 13, 2025 5:22:23 PM dsms.DsmsServer addShare
+INFO: Added 100 shares of NYKE010426 to EQUITY
