@@ -40,8 +40,9 @@ public class Client {
 
             System.out.println(fe.invoke("getShares:NYKB1000"));
 
-            // System.out.println(fe.invoke("swapShares:NYKB1000 NYKE010426 EQUITY
-            // LONB010426 BONUS"));
+            System.out.println(fe.invoke("swapShares:NYKB1000 NYKE010426 EQUITY LONB010426 BONUS"));
+
+            System.out.println(fe.invoke("getShares:NYKB1000"));
 
             // 8. Remove a share
             // System.out.println(fe.invoke("removeShare:NYKE010426 EQUITY"));

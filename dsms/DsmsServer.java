@@ -317,6 +317,8 @@ public class DsmsServer implements DsmsServerInterface {
                         newShareType, String.valueOf(ownedQuantity));
             }
 
+            System.out.println("DEBUG: Remote purchase response = " + purchaseResponse);
+
             if (!purchaseResponse.contains("successful")) {
                 if (!oldShareCity.equals(newShareCity)) {
                     queryRemoteServer(oldShareCity, "purchaseShare", buyerID, oldShareID, oldShareType,
@@ -432,9 +434,9 @@ public class DsmsServer implements DsmsServerInterface {
             case "NYK":
                 return "http://localhost:8010/dsms/service?wsdl";
             case "LON":
-                return "http://localhost:8120/dsms/service?wsdl";
+                return "http://localhost:8020/dsms/service?wsdl";
             case "TOK":
-                return "http://localhost:8230/dsms/service?wsdl";
+                return "http://localhost:8030/dsms/service?wsdl";
             default:
                 return null;
         }
