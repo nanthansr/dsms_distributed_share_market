@@ -1,4 +1,4 @@
-package dsms.test;
+package test;
 
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
