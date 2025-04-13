@@ -96,6 +96,7 @@ public class DsmsServer implements DsmsServerInterface {
     public String listShareAvailability(String shareType) {
 
         // Get local availability
+        //noinspection StringBufferReplaceableByString
         StringBuilder availability = new StringBuilder();
         availability.append("Global Market: ")
                 .append(shareDatabase.getOrDefault(shareType, new ConcurrentHashMap<>()));
@@ -192,6 +193,22 @@ public class DsmsServer implements DsmsServerInterface {
         }
 
         // Count the number of each share owned by the buyer
+        Map<String, Integer> shareCount = getStringIntegerMap(buyerShareList);
+
+        // Build output
+        StringBuilder shares = new StringBuilder();
+        shares.append("Global Market: ");
+        shares.append("Shares owned by ").append(buyerID).append(":\n");
+        for (Map.Entry<String, Integer> entry : shareCount.entrySet()) {
+            System.out.println("[DEBUG] shareCount = " + shareCount);
+            shares.append(entry.getKey()).append(" : ").append(entry.getValue()).append("\n");
+        }
+
+        transactionLogger.info("Got shares for " + buyerID);
+        return shares.toString();
+    }
+
+    private static Map<String, Integer> getStringIntegerMap(List<String> buyerShareList) {
         Map<String, Integer> shareCount = new HashMap<>();
         for (String entry : buyerShareList) {
             String[] parts = entry.split(":"); // Extract ShareID and ShareType
@@ -204,18 +221,7 @@ public class DsmsServer implements DsmsServerInterface {
 
             shareCount.put(stockName, shareCount.getOrDefault(stockName, 0) + 1);
         }
-
-        // Build output
-        StringBuilder shares = new StringBuilder();
-        shares.append("Global Market: ");
-        shares.append("Shares owned by " + buyerID + ":\n");
-        for (Map.Entry<String, Integer> entry : shareCount.entrySet()) {
-            System.out.println("[DEBUG] shareCount = " + shareCount);
-            shares.append(entry.getKey()).append(" : ").append(entry.getValue()).append("\n");
-        }
-
-        transactionLogger.info("Got shares for " + buyerID);
-        return shares.toString();
+        return shareCount;
     }
 
     @Override
@@ -286,19 +292,16 @@ public class DsmsServer implements DsmsServerInterface {
             int ownedQuantity = (int) buyerShares.get(buyerID).stream().filter(id -> id.equals(oldKey)).count();
 
             int availableQuantity;
+            String availabilityResponse;
             if (oldShareCity.equals(newShareCity)) {
-                String availabilityResponse = listShareAvailability(newShareType);
-                if (!availabilityResponse.contains(newShareID)) {
-                    return "Error: New share does not exist.";
-                }
-                availableQuantity = extractAvailableQuantity(availabilityResponse, newShareID);
+                availabilityResponse = listShareAvailability(newShareType);
             } else {
-                String availabilityResponse = queryRemoteServer(newShareCity, "listShareAvailability", newShareType);
-                if (!availabilityResponse.contains(newShareID)) {
-                    return "Error: New share does not exist.";
-                }
-                availableQuantity = extractAvailableQuantity(availabilityResponse, newShareID);
+                availabilityResponse = queryRemoteServer(newShareCity, "listShareAvailability", newShareType);
             }
+            if (!availabilityResponse.contains(newShareID)) {
+                return "Error: New share does not exist.";
+            }
+            availableQuantity = extractAvailableQuantity(availabilityResponse, newShareID);
 
             if (availableQuantity < ownedQuantity) {
                 return "Error: Not enough available shares in new city.";
@@ -363,11 +366,13 @@ public class DsmsServer implements DsmsServerInterface {
 
     private String queryRemoteServer(String cityCode, String method, String... params) throws Exception {
         String wsdlUrl = getWsdlUrl(cityCode);
+        //noinspection ConstantConditions
         if (cityCode == null) {
             return "Error: Unknown or unsupported city code '" + cityCode + "'";
         }
         System.out.println("DEBUG: Querying " + cityCode + " at " + wsdlUrl + " for " + method);
         try {
+            //noinspection ConstantConditions
             URL url = new URL(wsdlUrl);
             QName qname = new QName("http://dsms/", "DsmsServerService");
             Service service = Service.create(url, qname);
@@ -470,6 +475,7 @@ public class DsmsServer implements DsmsServerInterface {
     public void syncSystemState(String serializedState) {
         try {
             // 1. Decode the incoming Base64 state string into an object
+            @SuppressWarnings("unchecked")
             Map<String, Object> state = (Map<String, Object>) deserialize(Base64.getDecoder().decode(serializedState));
 
             // 2. Clear existing local data
@@ -478,9 +484,17 @@ public class DsmsServer implements DsmsServerInterface {
             buyerPurchaseHistory.clear();
 
             // 3. Replace with the new, synced data
-            shareDatabase.putAll((Map<String, Map<String, Integer>>) state.get("shareDatabase"));
-            buyerShares.putAll((Map<String, List<String>>) state.get("buyerShares"));
-            buyerPurchaseHistory.putAll((Map<String, Map<LocalDate, Integer>>) state.get("buyerPurchaseHistory"));
+            @SuppressWarnings("unchecked")
+            Map<String, Map<String, Integer>> shareData = (Map<String, Map<String, Integer>>) state.get("shareDatabase");
+            shareDatabase.putAll(shareData);
+            @SuppressWarnings("unchecked")
+            Map<String, List<String>> buyerSharesData = (Map<String, List<String>>) state.get("buyerShares");
+            buyerShares.putAll(buyerSharesData);
+
+            @SuppressWarnings("unchecked")
+            Map<String, Map<LocalDate, Integer>> buyerHistoryData = (Map<String, Map<LocalDate, Integer>>) state.get("buyerPurchaseHistory");
+            buyerPurchaseHistory.putAll(buyerHistoryData);
+
 
         } catch (Exception e) {
             System.out.println("[SYNC ERROR] Failed to restore system state.");
