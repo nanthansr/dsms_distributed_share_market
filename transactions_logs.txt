@@ -200,3 +200,13 @@ Apr 13, 2025 6:08:44 PM dsms.DsmsServer getShares
 INFO: Got shares for NYKB1000
 Apr 13, 2025 6:08:44 PM dsms.DsmsServer getShares
 INFO: Got shares for NYKB1000
+Apr 13, 2025 7:31:48 PM dsms.DsmsServer getShares
+INFO: Got shares for NYKB1000
+Apr 13, 2025 7:31:48 PM dsms.DsmsServer getShares
+INFO: Got shares for LONB1001
+Apr 13, 2025 7:31:48 PM dsms.DsmsServer sellShare
+INFO: NYKB1000 sold 1 NYKE010425
+Apr 13, 2025 7:31:48 PM dsms.DsmsServer getShares
+INFO: Got shares for NYKB1000
+Apr 13, 2025 7:31:48 PM dsms.DsmsServer getShares
+INFO: Got shares for NYKB1000

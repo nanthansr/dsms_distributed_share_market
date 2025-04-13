@@ -15,8 +15,6 @@ import java.net.URL;
 import javax.xml.namespace.QName;
 import javax.xml.ws.Service;
 
-import dsms.DsmsServerInterface;
-
 public class ReplicaLauncher {
     private static final ConcurrentHashMap<Integer, String> requestLog = new ConcurrentHashMap<>();
 
@@ -58,7 +56,6 @@ public class ReplicaLauncher {
                 DsmsServerInterface source = syncService.getPort(DsmsServerInterface.class);
                 String encoded = source.getSystemState();
                 serverImpl.syncSystemState(encoded);
-                // System.out.println("[SYNC] Successfully synced from: " + wsdl);
                 System.out.println("[SYNC] Replica " + replicaId + " just synced from: " + wsdl);
                 synced = true;
                 break;
@@ -93,7 +90,7 @@ public class ReplicaLauncher {
                 String[] parts = message.split(":", 3);
                 int seqId = Integer.parseInt(parts[0]);
                 String method = parts[1];
-                String params = parts.length > 2 ? parts[2] : "";
+                String params = (parts.length > 2) ? parts[2] : "";
 
                 // Ensure total order execution
                 DsmsServer realServer = (DsmsServer) serverImpl;
@@ -119,33 +116,28 @@ public class ReplicaLauncher {
     }
 
     private static String invokeMethod(DsmsServerInterface server, String method, String params) {
-        System.out.println("[DEBUG] Method received: " + method); // Add this line
-
+        System.out.println("[DEBUG] Method received: " + method);
         String[] args = params.split(" ");
         switch (method) {
             case "resetAndResyncFrom":
                 return server.resetAndResyncFrom(args[0]);
             case "addShare":
-                return server.addShare(args[0], args[1], Integer.parseInt(args[2]));
-
+                // Expects: adminID shareType shareID quantity
+                return server.addShare(args[0], args[1], args[2], Integer.parseInt(args[3]));
             case "removeShare":
-                return server.removeShare(args[0], args[1]);
-
+                // Expects: adminID shareType shareID
+                return server.removeShare(args[0], args[1], args[2]);
             case "listShareAvailability":
-                return server.listShareAvailability(args[0]);
-
+                // Expects: adminID shareType
+                return server.listShareAvailability(args[0], args[1]);
             case "getShares":
                 return server.getShares(args[0]);
-
             case "sellShare":
                 return server.sellShare(args[0], args[1], Integer.parseInt(args[2]));
-
             case "purchaseShare":
                 return server.purchaseShare(args[0], args[1], args[2], Integer.parseInt(args[3]));
-
             case "swapShares":
                 return server.swapShares(args[0], args[1], args[2], args[3], args[4]);
-
             case "cancelReservation":
                 return server.cancelReservation(args[0], args[1], Integer.parseInt(args[2]));
             default:
@@ -155,11 +147,10 @@ public class ReplicaLauncher {
 
     private static void sendResponseToFE(int seqId, String result) {
         try (DatagramSocket socket = new DatagramSocket()) {
-            String replicaId = java.lang.management.ManagementFactory.getRuntimeMXBean().getName(); // fallback
+            String replicaId = java.lang.management.ManagementFactory.getRuntimeMXBean().getName();
             if (System.getProperty("replicaId") != null) {
                 replicaId = System.getProperty("replicaId");
             }
-
             String response = seqId + ":" + result + "::" + replicaId;
             System.out.println("[DEBUG] Final response to FE: " + response);
             byte[] data = response.getBytes(StandardCharsets.UTF_8);
@@ -199,5 +190,4 @@ public class ReplicaLauncher {
                 return 8050;
         }
     }
-
 }
