@@ -5,6 +5,7 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
+import java.util.Scanner;
 
 import javax.xml.namespace.QName;
 import javax.xml.ws.Service;
@@ -69,14 +70,19 @@ public class ReplicaManager {
         try {
             System.out.println("[ReplicaManager] Restarting " + replicaId);
 
-            String city = getCityFromReplica(replicaId);
+            int servicePort = getServicePort(replicaId);
+            ensurePortIsFree(servicePort);
+
+            // ⏳ Short wait to make sure the port is fully released
+            Thread.sleep(1000);
+
             ProcessBuilder pb = new ProcessBuilder("java", "dsms.replicas.ReplicaLauncher", replicaId);
             pb.inheritIO();
             pb.start();
 
             replicaStatus.put(replicaId, "RESTARTED");
 
-            // Wait a bit for the replica to boot
+            // 💤 Let the replica launch before resyncing
             Thread.sleep(3000);
 
             // Trigger manual resync via FrontEnd
@@ -95,18 +101,18 @@ public class ReplicaManager {
         }
     }
 
-    private static String getCityFromReplica(String replicaId) {
+    private static int getServicePort(String replicaId) {
         switch (replicaId) {
             case "RM1":
-                return "NYK";
+                return 8010;
             case "RM2":
-                return "LON";
+                return 8020;
             case "RM3":
-                return "TOK";
+                return 8030;
             case "RM4":
-                return "NYK";
+                return 8040;
             default:
-                return "NYK";
+                throw new IllegalArgumentException("Unknown replica: " + replicaId);
         }
     }
 
@@ -122,6 +128,52 @@ public class ReplicaManager {
                 return "http://localhost:8040/dsms/service?wsdl";
             default:
                 return null;
+        }
+    }
+
+    private static void ensurePortIsFree(int port) {
+        try {
+            // Check if port is free
+            new java.net.ServerSocket(port).close();
+        } catch (IOException e) {
+            System.out.println("[ReplicaManager] Port " + port + " is in use. Attempting to kill process...");
+
+            try {
+                // Kill process using the port (macOS/Linux)
+                ProcessBuilder pb = new ProcessBuilder("bash", "-c", "lsof -ti:" + port);
+                Process p = pb.start();
+
+                Scanner scanner = new Scanner(p.getInputStream());
+                while (scanner.hasNextLine()) {
+                    String pid = scanner.nextLine().trim();
+                    if (!pid.isEmpty()) {
+                        System.out.println("[ReplicaManager] Killing process ID: " + pid);
+                        Runtime.getRuntime().exec("kill -9 " + pid);
+                    }
+                }
+                p.waitFor();
+
+                // 🔁 Confirm the port is now free
+                boolean released = false;
+                for (int i = 0; i < 10; i++) { // Try for up to 5 seconds
+                    Thread.sleep(500);
+                    try {
+                        new java.net.ServerSocket(port).close();
+                        released = true;
+                        break;
+                    } catch (IOException ignore) {
+                    }
+                }
+
+                if (!released) {
+                    System.out
+                            .println("[ReplicaManager] ERROR: Port " + port + " still not free after killing process.");
+                }
+
+            } catch (Exception killEx) {
+                System.out.println("[ReplicaManager] Failed to kill process on port " + port);
+                killEx.printStackTrace();
+            }
         }
     }
 

@@ -95,6 +95,7 @@ public class FrontEnd {
             socket.setSoTimeout(3000);
 
             Map<String, Integer> resultCountMap = new HashMap<>();
+            Map<String, String> replicaResults = new HashMap<>(); // Track which replica gave what
             int responsesNeeded = 2;
             int received = 0;
 
@@ -108,31 +109,52 @@ public class FrontEnd {
                             StandardCharsets.UTF_8);
                     System.out.println("[FE] Received: " + response);
 
-                    // Extract parts: expected format = seqId:result:RMx
-                    String[] parts = response.split(":", 3);
-                    String result = (parts.length >= 2) ? parts[1] : response;
-                    String sourceReplica = (parts.length == 3) ? parts[2] : "UNKNOWN";
+                    // Step 1: Split by "::" to separate response from replica
+                    String[] parts = response.split("::");
+                    String resultPart = parts[0];
+                    String sourceReplica = (parts.length > 1) ? parts[1].trim() : "UNKNOWN";
 
-                    System.out.println("[FE] Result from " + sourceReplica + ": " + result);
+                    System.out.println("[FE DEBUG] Received response #" + received + " from: " + sourceReplica);
+                    System.out.println("[FE DEBUG] Raw result = " + resultPart);
 
-                    // Count consensus based on result only
-                    result = result.trim();
+                    // Step 2: Remove seqId prefix (e.g., "14:message" → "message")
+                    String result = resultPart.substring(resultPart.indexOf(":") + 1).trim();
+                    System.out.println("[FE DEBUG] Parsed result = " + result);
+
+                    // Step 3: Track result by replica
+                    replicaResults.put(sourceReplica, result);
+
+                    // Step 4: Count how many replicas gave the same result
                     resultCountMap.put(result, resultCountMap.getOrDefault(result, 0) + 1);
+                    received++;
 
                     if (resultCountMap.get(result) >= responsesNeeded) {
                         return "[FE] Consensus reached: " + result;
                     }
 
-                    received++;
                 } catch (SocketTimeoutException e) {
-                    break; // timeout reached, break from loop
+                    break; // timeout reached, stop waiting
                 }
             }
 
-            // After some time or after receiving 4 results and no majority
-            if (received == 4) {
-                System.out.println("[FE] No consensus for request " + expectedRequestId);
-                notifyRM("RM2 BUG");
+            // Step 5: No consensus reached — show debug summary
+            System.out.println("[FE] No consensus for request " + expectedRequestId);
+            System.out.println("[FE] Replica result breakdown:");
+            for (Map.Entry<String, String> entry : replicaResults.entrySet()) {
+                System.out.println("  " + entry.getKey() + " → " + entry.getValue());
+            }
+
+            System.out.println("[FE] Vote count summary:");
+            for (Map.Entry<String, Integer> entry : resultCountMap.entrySet()) {
+                System.out.println("  Result: \"" + entry.getKey() + "\" → Votes: " + entry.getValue());
+            }
+
+            // Notify the buggy replica (currently picking one arbitrarily from the
+            // breakdown)
+            for (Map.Entry<String, String> entry : replicaResults.entrySet()) {
+                String replicaId = entry.getKey();
+                System.out.println("[FE] Notifying ReplicaManager: " + replicaId + " BUG");
+                notifyRM(replicaId + " BUG");
             }
 
             return "[FE] No consensus reached";

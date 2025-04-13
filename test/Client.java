@@ -1,3 +1,5 @@
+package test;
+
 import dsmsclient.FrontEnd;
 import dsmsclient.FrontEndService;
 

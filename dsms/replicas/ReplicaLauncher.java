@@ -58,7 +58,8 @@ public class ReplicaLauncher {
                 DsmsServerInterface source = syncService.getPort(DsmsServerInterface.class);
                 String encoded = source.getSystemState();
                 serverImpl.syncSystemState(encoded);
-                System.out.println("[SYNC] Successfully synced from: " + wsdl);
+                // System.out.println("[SYNC] Successfully synced from: " + wsdl);
+                System.out.println("[SYNC] Replica " + replicaId + " just synced from: " + wsdl);
                 synced = true;
                 break;
             } catch (Exception e) {
@@ -102,9 +103,11 @@ public class ReplicaLauncher {
                     String result = invokeMethod(serverImpl, method, params);
                     requestLog.put(seqId, result);
                     realServer.markProcessed(seqId);
+                    System.out.println("[DEBUG] Marked seqId " + seqId + " as processed.");
+                    System.out.println("[DEBUG] hasProcessed(" + seqId + ")? " + realServer.hasProcessed(seqId));
                     sendResponseToFE(seqId, result);
                 } else {
-                    // 🛡️ Re-send already processed result
+                    // Re-send already processed result
                     String cachedResult = requestLog.getOrDefault(seqId, "Result unavailable");
                     System.out.println("[Replica] Request " + seqId + " already processed. Re-sending cached result.");
                     sendResponseToFE(seqId, cachedResult);
@@ -158,6 +161,7 @@ public class ReplicaLauncher {
             }
 
             String response = seqId + ":" + result + "::" + replicaId;
+            System.out.println("[DEBUG] Final response to FE: " + response);
             byte[] data = response.getBytes(StandardCharsets.UTF_8);
             DatagramPacket packet = new DatagramPacket(data, data.length, InetAddress.getByName("localhost"), 9000);
             socket.send(packet);

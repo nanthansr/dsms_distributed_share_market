@@ -52,3 +52,35 @@ Apr 12, 2025 10:40:03 PM dsms.DsmsServer purchaseShare
 INFO: NYKB1000 purchased 2 of NYKE010426
 Apr 12, 2025 10:40:03 PM dsms.DsmsServer swapShares
 INFO: NYKB1000 swapped NYKE010425 for NYKE010426
+Apr 12, 2025 11:39:01 PM dsms.DsmsServer purchaseShare
+INFO: NYKB1000 purchased 3 of NYKE010425
+Apr 12, 2025 11:39:01 PM dsms.DsmsServer purchaseShare
+INFO: LONB1001 purchased 5 of LONB010426
+Apr 12, 2025 11:39:01 PM dsms.DsmsServer purchaseShare
+INFO: NYKB1000 purchased 2 of NYKE010426
+Apr 12, 2025 11:39:01 PM dsms.DsmsServer swapShares
+INFO: NYKB1000 swapped NYKE010425 for NYKE010426
+Apr 13, 2025 12:17:37 AM dsms.DsmsServer purchaseShare
+INFO: NYKB1000 purchased 3 of NYKE010425
+Apr 13, 2025 12:17:37 AM dsms.DsmsServer purchaseShare
+INFO: LONB1001 purchased 5 of LONB010426
+Apr 13, 2025 12:17:37 AM dsms.DsmsServer purchaseShare
+INFO: NYKB1000 purchased 2 of NYKE010426
+Apr 13, 2025 12:17:37 AM dsms.DsmsServer swapShares
+INFO: NYKB1000 swapped NYKE010425 for NYKE010426
+Apr 13, 2025 12:44:51 AM dsms.DsmsServer purchaseShare
+INFO: NYKB1000 purchased 3 of NYKE010425
+Apr 13, 2025 12:44:51 AM dsms.DsmsServer purchaseShare
+INFO: LONB1001 purchased 5 of LONB010426
+Apr 13, 2025 12:44:52 AM dsms.DsmsServer purchaseShare
+INFO: NYKB1000 purchased 2 of NYKE010426
+Apr 13, 2025 12:44:52 AM dsms.DsmsServer swapShares
+INFO: NYKB1000 swapped NYKE010425 for NYKE010426
+Apr 13, 2025 12:52:14 AM dsms.DsmsServer purchaseShare
+INFO: NYKB1000 purchased 3 of NYKE010425
+Apr 13, 2025 12:52:14 AM dsms.DsmsServer purchaseShare
+INFO: LONB1001 purchased 5 of LONB010426
+Apr 13, 2025 12:52:14 AM dsms.DsmsServer purchaseShare
+INFO: NYKB1000 purchased 2 of NYKE010426
+Apr 13, 2025 12:52:14 AM dsms.DsmsServer swapShares
+INFO: NYKB1000 swapped NYKE010425 for NYKE010426
