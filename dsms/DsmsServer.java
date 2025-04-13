@@ -97,7 +97,7 @@ public class DsmsServer implements DsmsServerInterface {
 
         // Get local availability
         StringBuilder availability = new StringBuilder();
-        availability.append(replicaId + " Market: ")
+        availability.append("Global Market: ")
                 .append(shareDatabase.getOrDefault(shareType, new ConcurrentHashMap<>()));
 
         adminLogger.info("Sent share availability for " + shareType);
@@ -207,7 +207,7 @@ public class DsmsServer implements DsmsServerInterface {
 
         // Build output
         StringBuilder shares = new StringBuilder();
-        shares.append(replicaId + " Market: \n");
+        shares.append("Global Market: ");
         shares.append("Shares owned by " + buyerID + ":\n");
         for (Map.Entry<String, Integer> entry : shareCount.entrySet()) {
             System.out.println("[DEBUG] shareCount = " + shareCount);
@@ -325,19 +325,6 @@ public class DsmsServer implements DsmsServerInterface {
                             String.valueOf(ownedQuantity));
                 }
                 return "Error: Could not purchase new share, swap aborted.";
-            }
-
-            List<String> buyerShareList = buyerShares.computeIfAbsent(buyerID, k -> new ArrayList<>());
-            int removed = 0;
-            Iterator<String> it = buyerShareList.iterator();
-            while (it.hasNext() && removed < ownedQuantity) {
-                if (it.next().equals(oldKey)) {
-                    it.remove();
-                    removed++;
-                }
-            }
-            for (int i = 0; i < ownedQuantity; i++) {
-                buyerShareList.add(newKey);
             }
 
             clientLogger.info(buyerID + " swapped " + oldShareID + " for " + newShareID);

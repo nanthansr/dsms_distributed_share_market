@@ -133,33 +133,34 @@ public class ReplicaManager {
 
     private static void ensurePortIsFree(int port) {
         try {
-            // Check if port is free
-            new java.net.ServerSocket(port).close();
+            new java.net.ServerSocket(port).close(); // Try to bind
         } catch (IOException e) {
             System.out.println("[ReplicaManager] Port " + port + " is in use. Attempting to kill process...");
 
             try {
-                // Kill process using the port (macOS/Linux)
                 ProcessBuilder pb = new ProcessBuilder("bash", "-c", "lsof -ti:" + port);
                 Process p = pb.start();
-
                 Scanner scanner = new Scanner(p.getInputStream());
+
                 while (scanner.hasNextLine()) {
                     String pid = scanner.nextLine().trim();
                     if (!pid.isEmpty()) {
                         System.out.println("[ReplicaManager] Killing process ID: " + pid);
-                        Runtime.getRuntime().exec("kill -9 " + pid);
+                        Process kill = Runtime.getRuntime().exec("kill -9 " + pid);
+                        kill.waitFor(); // Wait for process to terminate
                     }
                 }
-                p.waitFor();
 
-                // 🔁 Confirm the port is now free
+                p.waitFor(); // Ensure lsof completes
+
+                // 🔁 Retry port check for 5 seconds
                 boolean released = false;
-                for (int i = 0; i < 10; i++) { // Try for up to 5 seconds
+                for (int i = 0; i < 10; i++) {
                     Thread.sleep(500);
                     try {
                         new java.net.ServerSocket(port).close();
                         released = true;
+                        Thread.sleep(1000); // Give OS time to fully release
                         break;
                     } catch (IOException ignore) {
                     }
