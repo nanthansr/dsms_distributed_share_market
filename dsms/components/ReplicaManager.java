@@ -73,7 +73,6 @@ public class ReplicaManager {
             int servicePort = getServicePort(replicaId);
             ensurePortIsFree(servicePort);
 
-            // ⏳ Short wait to make sure the port is fully released
             Thread.sleep(1000);
 
             ProcessBuilder pb = new ProcessBuilder("java", "dsms.replicas.ReplicaLauncher", replicaId);
@@ -82,7 +81,6 @@ public class ReplicaManager {
 
             replicaStatus.put(replicaId, "RESTARTED");
 
-            // 💤 Let the replica launch before resyncing
             Thread.sleep(3000);
 
             // Trigger manual resync via FrontEnd
@@ -153,7 +151,6 @@ public class ReplicaManager {
 
                 p.waitFor(); // Ensure lsof completes
 
-                // 🔁 Retry port check for 5 seconds
                 boolean released = false;
                 for (int i = 0; i < 10; i++) {
                     Thread.sleep(500);
