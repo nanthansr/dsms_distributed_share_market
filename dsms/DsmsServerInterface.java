@@ -28,6 +28,9 @@ public interface DsmsServerInterface {
     String swapShares(String buyerID, String oldShareID, String oldShareType, String newShareID, String newShareType);
 
     @WebMethod
+    String cancelReservation(String shareID, String shareType, int amount);
+
+    @WebMethod
     int getShareQuantity(String shareID, String shareType);
 
     @WebMethod
@@ -39,4 +42,7 @@ public interface DsmsServerInterface {
 
     @WebMethod
     void syncSystemState(String serializedState);
+
+    @WebMethod
+    String resetAndResyncFrom(String wsdlUrl);
 }

@@ -21,28 +21,33 @@ public class ReplicaLauncher {
     private static final ConcurrentHashMap<Integer, String> requestLog = new ConcurrentHashMap<>();
 
     public static void main(String[] args) {
-        if (args.length < 2) {
-            System.out.println("Usage: java ReplicaLauncher <City> <ReplicaID>");
+        if (args.length < 1) {
+            System.out.println("Usage: java ReplicaLauncher <ReplicaID>");
             return;
         }
 
-        String city = args[0]; // NYK, LON, TOK, etc.
-        String replicaId = args[1]; // RM1, RM2, etc.
-        int udpPort = getUDPPort(city, replicaId);
+        String replicaId = args[0]; // RM1, RM2, etc.
+        System.setProperty("replicaId", replicaId);
+        int udpPort = getUDPPort(replicaId);
 
         // Start Web Service
-        String serviceURL = "http://localhost:" + getServicePort(city, replicaId) + "/dsms/" + city.toLowerCase();
-        DsmsServerInterface serverImpl = new DsmsServer(city);
+        String serviceURL = "http://localhost:" + getServicePort(replicaId) + "/dsms/service";
+
+        DsmsServer realServer = new DsmsServer(replicaId);
+        DsmsServerInterface serverImpl = realServer;
+
         Endpoint.publish(serviceURL, serverImpl);
 
         // 🔄 Dynamic failover sync logic, excluding self
         List<String> replicaWsdlList = new ArrayList<>();
         if (!replicaId.equalsIgnoreCase("RM1"))
-            replicaWsdlList.add("http://localhost:8010/dsms/nyk?wsdl");
+            replicaWsdlList.add("http://localhost:8010/dsms/service?wsdl");
         if (!replicaId.equalsIgnoreCase("RM2"))
-            replicaWsdlList.add("http://localhost:8120/dsms/lon?wsdl");
+            replicaWsdlList.add("http://localhost:8020/dsms/service?wsdl");
         if (!replicaId.equalsIgnoreCase("RM3"))
-            replicaWsdlList.add("http://localhost:8240/dsms/tok?wsdl");
+            replicaWsdlList.add("http://localhost:8030/dsms/service?wsdl");
+        if (!replicaId.equalsIgnoreCase("RM4"))
+            replicaWsdlList.add("http://localhost:8040/dsms/service?wsdl");
 
         boolean synced = false;
         for (String wsdl : replicaWsdlList) {
@@ -65,10 +70,10 @@ public class ReplicaLauncher {
             System.out.println("[SYNC INFO] No available source to sync from. Starting fresh.");
         }
 
-        System.out.println("Replica for " + city + " launched at " + serviceURL);
+        System.out.println("Replica " + replicaId + " launched at " + serviceURL + " — manages NYK, LON, TOK");
 
         // Start listening to UDP from Sequencer
-        new Thread(() -> listenUDP(serverImpl, udpPort)).start();
+        new Thread(() -> listenUDP(realServer, udpPort)).start();
     }
 
     private static void listenUDP(DsmsServerInterface serverImpl, int port) {
@@ -90,13 +95,19 @@ public class ReplicaLauncher {
                 String params = parts.length > 2 ? parts[2] : "";
 
                 // Ensure total order execution
-                if (!requestLog.containsKey(seqId)) {
+                DsmsServer realServer = (DsmsServer) serverImpl;
+
+                if (!realServer.hasProcessed(seqId)) {
                     System.out.println("[DEBUG] method=" + method + ", params=" + params);
                     String result = invokeMethod(serverImpl, method, params);
                     requestLog.put(seqId, result);
-
-                    // Send back to FE (placeholder)
+                    realServer.markProcessed(seqId);
                     sendResponseToFE(seqId, result);
+                } else {
+                    // 🛡️ Re-send already processed result
+                    String cachedResult = requestLog.getOrDefault(seqId, "Result unavailable");
+                    System.out.println("[Replica] Request " + seqId + " already processed. Re-sending cached result.");
+                    sendResponseToFE(seqId, cachedResult);
                 }
             }
         } catch (Exception e) {
@@ -109,6 +120,8 @@ public class ReplicaLauncher {
 
         String[] args = params.split(" ");
         switch (method) {
+            case "resetAndResyncFrom":
+                return server.resetAndResyncFrom(args[0]);
             case "addShare":
                 return server.addShare(args[0], args[1], Integer.parseInt(args[2]));
 
@@ -130,6 +143,8 @@ public class ReplicaLauncher {
             case "swapShares":
                 return server.swapShares(args[0], args[1], args[2], args[3], args[4]);
 
+            case "cancelReservation":
+                return server.cancelReservation(args[0], args[1], Integer.parseInt(args[2]));
             default:
                 return "NOT_IMPLEMENTED";
         }
@@ -137,53 +152,53 @@ public class ReplicaLauncher {
 
     private static void sendResponseToFE(int seqId, String result) {
         try (DatagramSocket socket = new DatagramSocket()) {
-            String response = seqId + ":" + result;
+            String replicaId = java.lang.management.ManagementFactory.getRuntimeMXBean().getName(); // fallback
+            if (System.getProperty("replicaId") != null) {
+                replicaId = System.getProperty("replicaId");
+            }
+
+            String response = seqId + ":" + result + "::" + replicaId;
             byte[] data = response.getBytes(StandardCharsets.UTF_8);
-            InetAddress feAddress = InetAddress.getByName("localhost");
-            DatagramPacket packet = new DatagramPacket(data, data.length, feAddress, 9000);
+            DatagramPacket packet = new DatagramPacket(data, data.length, InetAddress.getByName("localhost"), 9000);
             socket.send(packet);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    private static int getServicePort(String city, String replicaId) {
-        int basePort;
-        switch (city.toUpperCase()) {
-            case "LON":
-                basePort = 8100;
-                break;
-            case "TOK":
-                basePort = 8200;
-                break;
-            case "NYK":
-                basePort = 8000;
-                break;
+    private static int getUDPPort(String replicaId) {
+        switch (replicaId.toUpperCase()) {
+            case "RM1":
+                return 8510;
+            case "RM2":
+                return 8520;
+            case "RM3":
+                return 8530;
+            case "RM4":
+                return 8540;
             default:
-                basePort = 8300;
-                break;
+                return 8550;
         }
-        int offset = Integer.parseInt(replicaId.substring(2)) * 10;
-        return basePort + offset;
     }
 
-    private static int getUDPPort(String city, String replicaId) {
-        int basePort;
-        switch (city.toUpperCase()) {
-            case "NYK":
-                basePort = 8500;
-                break;
-            case "LON":
-                basePort = 8600;
-                break;
-            case "TOK":
-                basePort = 8700;
-                break;
+    private static int getServicePort(String replicaId) {
+        switch (replicaId.toUpperCase()) {
+            case "RM1":
+                return 8010;
+            case "RM2":
+                return 8020;
+            case "RM3":
+                return 8030;
+            case "RM4":
+                return 8040;
             default:
-                basePort = 8800;
-                break;
+                return 8050;
         }
-        int offset = Integer.parseInt(replicaId.substring(2)) * 10;
-        return basePort + offset;
     }
+
+    private static void resetReplica(DsmsServer server, String wsdlUrl) {
+        String result = server.resetAndResyncFrom(wsdlUrl);
+        System.out.println("[RESET] " + result);
+    }
+
 }

@@ -6,12 +6,42 @@ import java.net.DatagramSocket;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 
+import javax.xml.namespace.QName;
+import javax.xml.ws.Service;
+import java.net.URL;
+
+import dsms.DsmsServerInterface;
+
 public class ReplicaManager {
-    private static final int RM_PORT = 9100; // Port to listen for FE alerts
     private static final HashMap<String, String> replicaStatus = new HashMap<>();
 
     public static void main(String[] args) {
-        System.out.println("[ReplicaManager] Listening for failure alerts on port " + RM_PORT);
+        if (args.length < 1) {
+            System.out.println("Usage: java ReplicaManager <ReplicaID>");
+            return;
+        }
+
+        String replicaID = args[0];
+        int RM_PORT;
+
+        switch (replicaID) {
+            case "RM1":
+                RM_PORT = 9101;
+                break;
+            case "RM2":
+                RM_PORT = 9102;
+                break;
+            case "RM3":
+                RM_PORT = 9103;
+                break;
+            case "RM4":
+                RM_PORT = 9104;
+                break;
+            default:
+                throw new IllegalArgumentException("Unknown RM ID: " + replicaID);
+        }
+
+        System.out.println("[ReplicaManager " + replicaID + "] Listening for failure alerts on port " + RM_PORT);
         try (DatagramSocket socket = new DatagramSocket(RM_PORT)) {
             byte[] buffer = new byte[1024];
 
@@ -39,21 +69,33 @@ public class ReplicaManager {
         try {
             System.out.println("[ReplicaManager] Restarting " + replicaId);
 
-            // Sample: java ReplicaLauncher NY RM2
-            // You can change these as needed depending on mapping
             String city = getCityFromReplica(replicaId);
-            ProcessBuilder pb = new ProcessBuilder("java", "dsms.replicas.ReplicaLauncher", city, replicaId);
-            pb.inheritIO(); // Optional: redirect output to console
+            ProcessBuilder pb = new ProcessBuilder("java", "dsms.replicas.ReplicaLauncher", replicaId);
+            pb.inheritIO();
             pb.start();
 
             replicaStatus.put(replicaId, "RESTARTED");
+
+            // Wait a bit for the replica to boot
+            Thread.sleep(3000);
+
+            // Trigger manual resync via FrontEnd
+            String targetWsdl = getWsdlFromReplicaId(replicaId);
+            String resyncCommand = "resetAndResyncFrom:" + targetWsdl;
+
+            System.out.println("[ReplicaManager] Triggering auto-resync: " + resyncCommand);
+
+            dsmsclient.FrontEndService service = new dsmsclient.FrontEndService();
+            dsmsclient.FrontEnd fe = service.getFrontEndPort();
+            String result = fe.invoke(resyncCommand);
+            System.out.println("[ReplicaManager] Resync result: " + result);
+
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     private static String getCityFromReplica(String replicaId) {
-        // You could improve this to use a config or mapping table
         switch (replicaId) {
             case "RM1":
                 return "NYK";
@@ -62,9 +104,25 @@ public class ReplicaManager {
             case "RM3":
                 return "TOK";
             case "RM4":
-                return "NYK"; // Assume second NY replica for simplicity
+                return "NYK";
             default:
                 return "NYK";
         }
     }
+
+    private static String getWsdlFromReplicaId(String replicaId) {
+        switch (replicaId) {
+            case "RM1":
+                return "http://localhost:8010/dsms/service?wsdl";
+            case "RM2":
+                return "http://localhost:8020/dsms/service?wsdl";
+            case "RM3":
+                return "http://localhost:8030/dsms/service?wsdl";
+            case "RM4":
+                return "http://localhost:8040/dsms/service?wsdl";
+            default:
+                return null;
+        }
+    }
+
 }
