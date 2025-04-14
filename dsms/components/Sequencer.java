@@ -21,11 +21,10 @@ public class Sequencer {
                 String request = new String(packet.getData(), 0, packet.getLength(), StandardCharsets.UTF_8);
                 System.out.println("Received from FE: " + request);
 
-                String sequencedRequest = sequenceId + ":" + request;
+                String sequencedRequest = request;
                 sequenceId++;
 
                 String city = getCityFromRequest(request);
-                System.out.println("Target city: " + city);
                 multicastToReplicas(city, sequencedRequest);
             }
         } catch (Exception e) {
@@ -91,7 +90,6 @@ public class Sequencer {
                 return "ALL";
             }
 
-            // for getShares
             if (shareID != null && shareID.length() >= 3) {
                 String prefix = shareID.substring(0, 3).toUpperCase();
                 if (prefix.equals("NYK"))

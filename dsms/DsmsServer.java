@@ -31,14 +31,13 @@ import java.net.URL;
 
 public class DsmsServer implements DsmsServerInterface {
 
-    private final String cityCode;
+    private final Set<Integer> processedRequests = ConcurrentHashMap.newKeySet();
 
-    public DsmsServer(String cityCode) {
-        this.cityCode = cityCode;
-    }
+    private final String replicaId;
 
-    private String getCityCode() {
-        return cityCode;
+    public DsmsServer(String replicaId) {
+        this.replicaId = replicaId;
+        System.out.println("[INIT] " + replicaId + " manages: NYK, LON, TOK");
     }
 
     private static final Logger adminLogger = LoggerUtility.getAdminLogger();
@@ -46,6 +45,7 @@ public class DsmsServer implements DsmsServerInterface {
     private static final Logger transactionLogger = LoggerUtility.getTransactionLogger();
 
     private static final Map<String, Map<String, Integer>> shareDatabase = new ConcurrentHashMap<>();
+
     private static final Map<String, List<String>> buyerShares = new ConcurrentHashMap<>();
     private static final Map<String, Map<LocalDate, Integer>> buyerPurchaseHistory = new ConcurrentHashMap<>();
     private static final int MAX_OUT_OF_CITY_PURCHASES = 3;
@@ -84,11 +84,10 @@ public class DsmsServer implements DsmsServerInterface {
     // LISTSHARES
     @Override
     public String listShareAvailability(String shareType) {
-        String thisServer = getCityCode();
 
         // Get local availability
         StringBuilder availability = new StringBuilder();
-        availability.append(thisServer + " Market: ")
+        availability.append("Global Market: ")
                 .append(shareDatabase.getOrDefault(shareType, new ConcurrentHashMap<>()));
 
         adminLogger.info("Sent share availability for " + shareType);
@@ -98,8 +97,7 @@ public class DsmsServer implements DsmsServerInterface {
 
     @Override
     public String purchaseShare(String buyerID, String shareID, String shareType, int quantity) {
-        // System.out.println("[DEBUG] buyerShares from Purchase method = " +
-        // buyerShares);
+
         String buyerCity = buyerID.substring(0, 3);
         String shareCity = shareID.substring(0, 3);
 
@@ -108,16 +106,6 @@ public class DsmsServer implements DsmsServerInterface {
                 && shareDatabase.get(shareType).containsKey(shareID);
 
         int availableShares = isLocalPurchase ? shareDatabase.get(shareType).get(shareID) : -1;
-
-        // Step 2: If not found locally, check other cities
-        if (!isLocalPurchase) {
-            try {
-                availableShares = Integer
-                        .parseInt(queryRemoteServer(shareCity, "getShareQuantity", shareID, shareType));
-            } catch (Exception e) {
-                return "Error retrieving share availability from remote city.";
-            }
-        }
 
         // Step 3: Validate availability
         if (availableShares < quantity) {
@@ -136,22 +124,7 @@ public class DsmsServer implements DsmsServerInterface {
                     + " out-of-city shares per week.";
         }
 
-        // Step 5: If the share is local, update the local database
-        if (isLocalPurchase) {
-            shareDatabase.get(shareType).put(shareID, availableShares - quantity);
-        } else {
-            // Forward purchase request to remote server
-            String purchaseResponse;
-            try {
-                purchaseResponse = queryRemoteServer(shareCity, "purchaseShare", buyerID, shareID, shareType,
-                        String.valueOf(quantity));
-                if (!purchaseResponse.contains("successful")) {
-                    return "Error: Remote purchase failed.";
-                }
-            } catch (Exception e) {
-                return "Error: Unable to process remote purchase.";
-            }
-        }
+        shareDatabase.get(shareType).put(shareID, availableShares - quantity);
 
         // Step 6: Correctly store the purchased quantity in `buyerShares`
         List<String> buyerShareList = buyerShares.computeIfAbsent(buyerID, k -> new ArrayList<>());
@@ -172,19 +145,14 @@ public class DsmsServer implements DsmsServerInterface {
     public String getShares(String buyerID) {
         // System.out.println("[DEBUG] buyerShares from getShares method = " +
         // buyerShares);
-        String thisServer = getCityCode();
 
-        System.out.println("Processing getShares request for " + buyerID + " at " + thisServer);
+        System.out.println("Processing getShares request for " + buyerID);
 
         // Get buyer's shares
         List<String> buyerShareList = buyerShares.get(buyerID);
 
         if (buyerShareList == null || buyerShareList.isEmpty()) {
-            return "No shares found for " + buyerID + " in " + cityCode;
-        }
-
-        if (buyerShareList.isEmpty()) {
-            return thisServer + " Market: No shares owned.";
+            return "No shares found for " + buyerID;
         }
 
         // Count the number of each share owned by the buyer
@@ -203,14 +171,14 @@ public class DsmsServer implements DsmsServerInterface {
 
         // Build output
         StringBuilder shares = new StringBuilder();
-        shares.append(thisServer + " Market: \n");
+        shares.append("Global Market: ");
         shares.append("Shares owned by " + buyerID + ":\n");
         for (Map.Entry<String, Integer> entry : shareCount.entrySet()) {
             System.out.println("[DEBUG] shareCount = " + shareCount);
             shares.append(entry.getKey()).append(" : ").append(entry.getValue()).append("\n");
         }
 
-        transactionLogger.info("Got shares for " + buyerID + " at " + thisServer);
+        transactionLogger.info("Got shares for " + buyerID);
         return shares.toString();
     }
 
@@ -248,92 +216,35 @@ public class DsmsServer implements DsmsServerInterface {
 
         transactionLogger.info(buyerID + " sold " + quantity + " " + shareID);
 
-        // If local, reassign to the local market
-        if (buyerCity.equals(shareCity)) {
-            shareDatabase.get(shareType).put(shareID, shareDatabase.get(shareType).getOrDefault(shareID, 0) + quantity);
-            return "Successfully sold " + quantity + " shares of " + shareID + " back to the local market.";
-        } else {
-            // Forward the request to the remote server to add `quantity` shares back
-            try {
-                return queryRemoteServer(shareCity, "reassignShare", shareID, shareType, String.valueOf(quantity));
-            } catch (Exception e) {
-                e.printStackTrace();
-                return "Error: Unable to reassign remote share.";
-            }
-        }
+        shareDatabase.get(shareType).put(shareID, shareDatabase.get(shareType).getOrDefault(shareID, 0) + quantity);
+        return "Successfully sold " + quantity + " shares of " + shareID + " back to the local market.";
+
     }
 
-    // SWAPSHARES
     @Override
     public String swapShares(String buyerID, String oldShareID, String oldShareType, String newShareID,
             String newShareType) {
         lock.lock();
         try {
-
-            String oldShareCity = oldShareID.substring(0, 3);
-            String newShareCity = newShareID.substring(0, 3);
-
             String oldKey = oldShareID + ":" + oldShareType;
             String newKey = newShareID + ":" + newShareType;
 
-            // Step 1: Check if the buyer owns the old share
-            if (!buyerShares.containsKey(buyerID) || !buyerShares.get(buyerID).contains(oldKey)) {
+            List<String> buyerShareList = buyerShares.get(buyerID);
+            if (buyerShareList == null || !buyerShareList.contains(oldKey)) {
                 return "Error: Buyer does not own the old share.";
             }
-            // Get the quantity of the old share owned by the buyer
-            int ownedQuantity = (int) buyerShares.get(buyerID).stream().filter(id -> id.equals(oldKey)).count();
 
-            // Step 2: Get share availability using listShareAvailability()
-            String availabilityResponse = queryRemoteServer(newShareCity, "listShareAvailability", newShareType);
+            int ownedQuantity = (int) buyerShareList.stream().filter(s -> s.equals(oldKey)).count();
 
-            // Step 3: Check if newShareID exists and has enough available shares
-            if (!availabilityResponse.contains(newShareID)) {
-                return "Error: New share does not exist.";
-            }
+            // Get available quantity of the new share
+            int availableQuantity = shareDatabase.getOrDefault(newShareType, new ConcurrentHashMap<>())
+                    .getOrDefault(newShareID, 0);
 
-            // Extract available quantity from response
-            int availableQuantity = extractAvailableQuantity(availabilityResponse, newShareID);
             if (availableQuantity < ownedQuantity) {
-                return "Error: Not enough available shares in new city.";
+                return "Error: Not enough available shares to perform the swap.";
             }
 
-            System.out.println("DEBUG: Swap conditions met.");
-            System.out.println("DEBUG: Old share: " + oldShareID + ", New share: " + newShareID);
-            System.out.println("DEBUG: Old share city: " + oldShareCity + ", New share city: " + newShareCity);
-            System.out
-                    .println("DEBUG: Owned quantity: " + ownedQuantity + ", Available quantity: " + availableQuantity);
-
-            // // Step 4: Reserve the new share before selling the old share
-            // String reserveResponse = queryRemoteServer(newShareCity, "reserveShare",
-            // newShareID,
-            // String.valueOf(ownedQuantity));
-            // if (!reserveResponse.contains("reserved")) {
-            // return "Error: Could not reserve new share.";
-            // }
-
-            // Step 5: Sell the old share
-            String sellResponse = sellShare(buyerID, oldShareID, ownedQuantity);
-            if (!sellResponse.contains("Successfully")) {
-                // queryRemoteServer(newShareCity, "cancelReservation", newShareID,
-                // String.valueOf(ownedQuantity));
-                return "Error: Could not sell old share, swap aborted.";
-            }
-
-            // Step 6: Purchase the new share (final commit)
-            String purchaseResponse = queryRemoteServer(newShareCity, "purchaseShare", buyerID, newShareID,
-                    newShareType, String.valueOf(ownedQuantity));
-
-            System.out.println("DEBUG: Purchase response: " + purchaseResponse);
-            if (!purchaseResponse.contains("successful")) {
-                queryRemoteServer(oldShareCity, "purchaseShare", buyerID, oldShareID, oldShareType,
-                        String.valueOf(ownedQuantity));
-                queryRemoteServer(newShareCity, "cancelReservation", newShareID, String.valueOf(ownedQuantity));
-                return "Error: Could not purchase new share, swap aborted.";
-            }
-
-            // Step 7: Update buyer's records
-            List<String> buyerShareList = buyerShares.computeIfAbsent(buyerID, k -> new ArrayList<>());
-
+            // Step 1: Remove old shares from buyer list
             int removed = 0;
             Iterator<String> it = buyerShareList.iterator();
             while (it.hasNext() && removed < ownedQuantity) {
@@ -343,10 +254,19 @@ public class DsmsServer implements DsmsServerInterface {
                 }
             }
 
+            // Step 2: Add new shares to buyer list
             for (int i = 0; i < ownedQuantity; i++) {
-                buyerShares.get(buyerID).add(newShareID + ":" + newShareType);
+                buyerShareList.add(newKey);
             }
-            clientLogger.info(buyerID + " swapped " + oldShareID + " for " + newShareID);
+
+            // Step 3: Update shareDatabase quantities
+            shareDatabase.get(oldShareType).put(oldShareID,
+                    shareDatabase.get(oldShareType).getOrDefault(oldShareID, 0) + ownedQuantity);
+
+            shareDatabase.get(newShareType).put(newShareID,
+                    shareDatabase.get(newShareType).getOrDefault(newShareID, 0) - ownedQuantity);
+
+            clientLogger.info(buyerID + " swapped " + ownedQuantity + " of " + oldShareID + " for " + newShareID);
             return "Share swap successful: " + oldShareID + " replaced with " + newShareID;
         } catch (Exception e) {
             e.printStackTrace();
@@ -354,6 +274,18 @@ public class DsmsServer implements DsmsServerInterface {
         } finally {
             lock.unlock();
         }
+    }
+
+    @Override
+    public String cancelReservation(String shareID, String shareType, int amount) {
+        shareType = shareType.trim().toUpperCase();
+        shareID = shareID.trim();
+
+        shareDatabase.computeIfAbsent(shareType, k -> new ConcurrentHashMap<>());
+        shareDatabase.get(shareType).merge(shareID, amount, Integer::sum);
+
+        System.out.println("[CANCEL] Restored " + amount + " shares to " + shareID + " (" + shareType + ")");
+        return "Reservation cancelled. " + amount + " shares restored to " + shareID;
     }
 
     // HELPER METHODS
@@ -364,43 +296,6 @@ public class DsmsServer implements DsmsServerInterface {
             }
         }
         return null;
-    }
-
-    private String queryRemoteServer(String cityCode, String method, String... params) throws Exception {
-        String wsdlUrl = getWsdlUrl(cityCode);
-        if (cityCode == null) {
-            return "Error: Unknown or unsupported city code '" + cityCode + "'";
-        }
-        System.out.println("DEBUG: Querying " + cityCode + " at " + wsdlUrl + " for " + method);
-        try {
-            URL url = new URL(wsdlUrl);
-            QName qname = new QName("http://dsms/", "DsmsServerService");
-            Service service = Service.create(url, qname);
-            DsmsServerInterface remoteServer = service.getPort(DsmsServerInterface.class);
-
-            switch (method) {
-                case "reassignShare":
-                    return remoteServer.reassignShare(params[0], params[1], params[2]);
-                case "getShareQuantity":
-                    return String.valueOf(remoteServer.getShareQuantity(params[0], params[1]));
-                case "getShares":
-                    return remoteServer.getShares(params[0]);
-                case "listShareAvailability":
-                    return remoteServer.listShareAvailability(params[0]);
-                case "sellShare":
-                    return remoteServer.sellShare(params[0], params[1], Integer.parseInt(params[2]));
-                case "purchaseShare":
-                    return remoteServer.purchaseShare(params[0], params[1], params[2], Integer.parseInt(params[3]));
-                case "swapShares":
-                    return remoteServer.swapShares(params[0], params[1], params[2], params[3], params[4]);
-                default:
-                    return "Error: Unknown method.";
-            }
-        } catch (Exception e) {
-            System.err.println("DEBUG: Connection failed for " + wsdlUrl + ": " + e.getMessage());
-            e.printStackTrace();
-            return "Error: Unable to connect to remote server.";
-        }
     }
 
     // reassigns a share to its original local market : part of the sellShare method
@@ -419,41 +314,6 @@ public class DsmsServer implements DsmsServerInterface {
                 .getOrDefault(shareID, 0);
     }
 
-    // // reserves a share for a buyer : part of the swapShares method
-    // @Override
-    // public String reserveShare(String shareID, String quantity) {
-    // return "Share " + shareID + " reserved.";
-    // }
-
-    // @Override
-    // public String cancelReservation(String shareID) {
-    // return "Reservation for share " + shareID + " cancelled.";
-    // }
-
-    private String getWsdlUrl(String cityCode) {
-        switch (cityCode.toUpperCase()) {
-            case "NYK":
-                return "http://localhost:8010/dsms/nyk?wsdl";
-            case "LON":
-                return "http://localhost:8120/dsms/lon?wsdl";
-            case "TOK":
-                return "http://localhost:8230/dsms/tok?wsdl";
-            default:
-                return null;
-        }
-    }
-
-    private int extractAvailableQuantity(String availabilityResponse, String targetShareID) {
-        String[] entries = availabilityResponse.split(","); // split by comma to get each entry
-        for (String entry : entries) { // Iterate over each entry
-            if (entry.contains(targetShareID)) {
-                String[] parts = entry.trim().split("="); // Split by = to get the shareID and quantity
-                return Integer.parseInt(parts[parts.length - 1]); // Last value should be the quantity
-            }
-        }
-        return 0;
-    }
-
     @Override
     public String getSystemState() {
         try {
@@ -470,12 +330,15 @@ public class DsmsServer implements DsmsServerInterface {
     @Override
     public void syncSystemState(String serializedState) {
         try {
+            // 1. Decode the incoming Base64 state string into an object
             Map<String, Object> state = (Map<String, Object>) deserialize(Base64.getDecoder().decode(serializedState));
 
+            // 2. Clear existing local data
             shareDatabase.clear();
             buyerShares.clear();
             buyerPurchaseHistory.clear();
 
+            // 3. Replace with the new, synced data
             shareDatabase.putAll((Map<String, Map<String, Integer>>) state.get("shareDatabase"));
             buyerShares.putAll((Map<String, List<String>>) state.get("buyerShares"));
             buyerPurchaseHistory.putAll((Map<String, Map<LocalDate, Integer>>) state.get("buyerPurchaseHistory"));
@@ -496,6 +359,29 @@ public class DsmsServer implements DsmsServerInterface {
         ByteArrayInputStream bais = new ByteArrayInputStream(data);
         ObjectInputStream ois = new ObjectInputStream(bais);
         return ois.readObject();
+    }
+
+    public boolean hasProcessed(int requestId) {
+        return processedRequests.contains(requestId);
+    }
+
+    public void markProcessed(int requestId) {
+        processedRequests.add(requestId);
+    }
+
+    @Override
+    public String resetAndResyncFrom(String wsdlUrl) {
+        try {
+            QName qname = new QName("http://dsms/", "DsmsServerService");
+            Service syncService = Service.create(new URL(wsdlUrl), qname);
+            DsmsServerInterface source = syncService.getPort(DsmsServerInterface.class);
+            String encoded = source.getSystemState();
+            this.syncSystemState(encoded);
+            return "SUCCESS: Resynced from " + wsdlUrl;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "ERROR: Could not resync from " + wsdlUrl;
+        }
     }
 
 }

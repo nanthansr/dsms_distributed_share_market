@@ -1,4 +1,4 @@
-package dsms.test;
+package test;
 
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -13,13 +13,18 @@ public class TestClient {
         Scanner sc = new Scanner(System.in);
         System.out.println("Test Client Ready.");
 
+        int sequenceId = 1; // 🔢 Ensures unique request ID for each message
+
         while (true) {
             System.out.print("Enter request (method:params) or 'exit': ");
             String input = sc.nextLine();
             if ("exit".equalsIgnoreCase(input))
                 break;
 
-            sendRequestToFrontEnd(input);
+            String message = sequenceId + ":" + input.trim(); // 🔒 Prefix with unique ID
+            sendRequestToFrontEnd(message);
+            System.out.println("[TestClient] Sent: " + sequenceId + ":" + input);
+            sequenceId++; // 🔁 Always increment, even on invalid input
         }
 
         sc.close();
@@ -27,11 +32,9 @@ public class TestClient {
 
     private static void sendRequestToFrontEnd(String message) {
         try (DatagramSocket socket = new DatagramSocket()) {
-            // You can simulate delay or altered data here if needed
             byte[] data = message.getBytes(StandardCharsets.UTF_8);
             DatagramPacket packet = new DatagramPacket(data, data.length, InetAddress.getByName("localhost"), FE_PORT);
             socket.send(packet);
-            System.out.println("[TestClient] Sent: " + message);
         } catch (Exception e) {
             e.printStackTrace();
         }
