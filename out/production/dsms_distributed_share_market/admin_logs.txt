@@ -326,3 +326,261 @@ Apr 13, 2025 6:08:44 PM dsms.DsmsServer listShareAvailability
 INFO: Sent share availability for BONUS
 Apr 13, 2025 6:08:44 PM dsms.DsmsServer addShare
 INFO: Added 100 shares of NYKE010426 to EQUITY
+Apr 13, 2025 7:31:47 PM dsms.DsmsServer addShare
+INFO: Admin NYKA1000 added 100 shares of NYKE010425 to EQUITY
+Apr 13, 2025 7:31:48 PM dsms.DsmsServer addShare
+INFO: Admin LONA1000 added 100 shares of LONB010426 to BONUS
+Apr 13, 2025 7:31:48 PM dsms.DsmsServer listShareAvailability
+INFO: Admin NYKA1000 requested share availability for EQUITY
+Apr 13, 2025 7:31:48 PM dsms.DsmsServer listShareAvailability
+INFO: Admin LONA1000 requested share availability for BONUS
+Apr 13, 2025 7:31:48 PM dsms.DsmsServer listShareAvailability
+INFO: Admin NYKA1000 requested share availability for EQUITY
+Apr 13, 2025 7:31:48 PM dsms.DsmsServer listShareAvailability
+INFO: Admin LONA1000 requested share availability for BONUS
+Apr 13, 2025 7:31:48 PM dsms.DsmsServer addShare
+INFO: Admin NYKA1000 added 100 shares of NYKE010426 to EQUITY
+Apr 13, 2025 7:31:48 PM dsms.DsmsServer removeShare
+INFO: Admin NYKA1000 removed share: NYKE010426 from EQUITY
+Apr 13, 2025 7:32:25 PM dsms.DsmsServer addShare
+INFO: Admin NYKA1000 added 10 shares of NYKE100225 to EQUITY
+Apr 13, 2025 7:32:56 PM dsms.DsmsServer listShareAvailability
+INFO: Admin NYKA1000 requested share availability for EQUITY
+Apr 13, 2025 7:57:48 PM dsms.DsmsServer addShare
+INFO: Admin NYKA1000 added 100 shares of NYKE010425 to EQUITY
+Apr 13, 2025 7:57:48 PM dsms.DsmsServer addShare
+INFO: Admin NYKA1000 added 100 shares of NYKE010426 to EQUITY
+Apr 13, 2025 7:57:48 PM dsms.DsmsServer addShare
+INFO: Admin NYKA1000 added 100 shares of NYKE010425 to EQUITY
+Apr 13, 2025 7:57:48 PM dsms.DsmsServer addShare
+INFO: Admin NYKA1000 added 100 shares of NYKE010425 to EQUITY
+Apr 13, 2025 7:57:48 PM dsms.DsmsServer addShare
+INFO: Admin NYKA1000 added 100 shares of NYKE010425 to EQUITY
+Apr 13, 2025 7:57:48 PM dsms.DsmsServer listShareAvailability
+INFO: Admin NYKA1000 requested share availability for EQUITY
+Apr 13, 2025 7:57:51 PM dsms.DsmsServer addShare
+INFO: Admin NYKA1000 added 100 shares of NYKE010425 to EQUITY
+Apr 13, 2025 7:57:51 PM dsms.DsmsServer addShare
+INFO: Admin NYKA1000 added 100 shares of NYKE010425 to EQUITY
+Apr 13, 2025 7:57:51 PM dsms.DsmsServer addShare
+INFO: Admin NYKA1000 added 100 shares of NYKE010425 to EQUITY
+Apr 13, 2025 7:57:51 PM dsms.DsmsServer addShare
+INFO: Admin NYKA1000 added 100 shares of NYKE010425 to EQUITY
+Apr 13, 2025 7:57:51 PM dsms.DsmsServer addShare
+INFO: Admin LONA1000 added 100 shares of LONB010426 to BONUS
+Apr 13, 2025 7:59:00 PM dsms.DsmsServer addShare
+INFO: Admin NYKA1000 added 100 shares of NYKE010425 to EQUITY
+Apr 13, 2025 7:59:00 PM dsms.DsmsServer addShare
+INFO: Admin NYKA1000 added 100 shares of NYKE010426 to EQUITY
+Apr 13, 2025 7:59:00 PM dsms.DsmsServer addShare
+INFO: Admin NYKA1000 added 100 shares of NYKE010425 to EQUITY
+Apr 13, 2025 7:59:00 PM dsms.DsmsServer addShare
+INFO: Admin NYKA1000 added 100 shares of NYKE010425 to EQUITY
+Apr 13, 2025 7:59:00 PM dsms.DsmsServer addShare
+INFO: Admin NYKA1000 added 100 shares of NYKE010425 to EQUITY
+Apr 13, 2025 7:59:00 PM dsms.DsmsServer listShareAvailability
+INFO: Admin NYKA1000 requested share availability for EQUITY
+Apr 13, 2025 7:59:02 PM dsms.DsmsServer addShare
+INFO: Admin NYKA1000 added 100 shares of NYKE010425 to EQUITY
+Apr 13, 2025 7:59:03 PM dsms.DsmsServer addShare
+INFO: Admin NYKA1000 added 100 shares of NYKE010425 to EQUITY
+Apr 13, 2025 7:59:03 PM dsms.DsmsServer addShare
+INFO: Admin NYKA1000 added 100 shares of NYKE010425 to EQUITY
+Apr 13, 2025 7:59:03 PM dsms.DsmsServer addShare
+INFO: Admin NYKA1000 added 100 shares of NYKE010425 to EQUITY
+Apr 13, 2025 7:59:03 PM dsms.DsmsServer addShare
+INFO: Admin LONA1000 added 100 shares of LONB010426 to BONUS
+Apr 13, 2025 8:02:44 PM dsms.DsmsServer addShare
+INFO: Admin NYKA1000 added 100 shares of NYKE010425 to EQUITY
+Apr 13, 2025 8:02:44 PM dsms.DsmsServer addShare
+INFO: Admin NYKA1000 added 100 shares of NYKE010426 to EQUITY
+Apr 13, 2025 8:02:44 PM dsms.DsmsServer addShare
+INFO: Admin NYKA1000 added 100 shares of NYKE010425 to EQUITY
+Apr 13, 2025 8:02:44 PM dsms.DsmsServer addShare
+INFO: Admin NYKA1000 added 100 shares of NYKE010425 to EQUITY
+Apr 13, 2025 8:02:44 PM dsms.DsmsServer addShare
+INFO: Admin NYKA1000 added 100 shares of NYKE010425 to EQUITY
+Apr 13, 2025 8:02:44 PM dsms.DsmsServer listShareAvailability
+INFO: Admin NYKA1000 requested share availability for EQUITY
+Apr 13, 2025 8:02:47 PM dsms.DsmsServer addShare
+INFO: Admin NYKA1000 added 100 shares of NYKE010425 to EQUITY
+Apr 13, 2025 8:02:47 PM dsms.DsmsServer addShare
+INFO: Admin NYKA1000 added 100 shares of NYKE010425 to EQUITY
+Apr 13, 2025 8:02:47 PM dsms.DsmsServer addShare
+INFO: Admin NYKA1000 added 100 shares of NYKE010425 to EQUITY
+Apr 13, 2025 8:02:47 PM dsms.DsmsServer addShare
+INFO: Admin NYKA1000 added 100 shares of NYKE010425 to EQUITY
+Apr 13, 2025 8:02:47 PM dsms.DsmsServer addShare
+INFO: Admin LONA1000 added 100 shares of LONB010426 to BONUS
+Apr 13, 2025 8:04:42 PM dsms.DsmsServer addShare
+INFO: Admin NYKA1000 added 100 shares of NYKE010425 to EQUITY
+Apr 13, 2025 8:04:42 PM dsms.DsmsServer addShare
+INFO: Admin NYKA1000 added 100 shares of NYKE010425 to EQUITY
+Apr 13, 2025 8:04:42 PM dsms.DsmsServer addShare
+INFO: Admin NYKA1000 added 100 shares of NYKE010426 to EQUITY
+Apr 13, 2025 8:04:42 PM dsms.DsmsServer addShare
+INFO: Admin NYKA1000 added 100 shares of NYKE010425 to EQUITY
+Apr 13, 2025 8:04:42 PM dsms.DsmsServer addShare
+INFO: Admin NYKA1000 added 100 shares of NYKE010425 to EQUITY
+Apr 13, 2025 8:04:42 PM dsms.DsmsServer addShare
+INFO: Admin NYKA1000 added 100 shares of NYKE010425 to EQUITY
+Apr 13, 2025 8:04:42 PM dsms.DsmsServer listShareAvailability
+INFO: Admin NYKA1000 requested share availability for EQUITY
+Apr 13, 2025 8:04:45 PM dsms.DsmsServer addShare
+INFO: Admin NYKA1000 added 100 shares of NYKE010425 to EQUITY
+Apr 13, 2025 8:04:45 PM dsms.DsmsServer addShare
+INFO: Admin NYKA1000 added 100 shares of NYKE010425 to EQUITY
+Apr 13, 2025 8:04:45 PM dsms.DsmsServer addShare
+INFO: Admin NYKA1000 added 100 shares of NYKE010425 to EQUITY
+Apr 13, 2025 8:04:45 PM dsms.DsmsServer addShare
+INFO: Admin NYKA1000 added 100 shares of NYKE010425 to EQUITY
+Apr 13, 2025 8:04:45 PM dsms.DsmsServer addShare
+INFO: Admin LONA1000 added 100 shares of LONB010426 to BONUS
+Apr 13, 2025 8:07:03 PM dsms.DsmsServer addShare
+INFO: Admin NYKA1000 added 100 shares of NYKE010425 to EQUITY
+Apr 13, 2025 8:07:03 PM dsms.DsmsServer addShare
+INFO: Admin NYKA1000 added 100 shares of NYKE010425 to EQUITY
+Apr 13, 2025 8:07:03 PM dsms.DsmsServer addShare
+INFO: Admin NYKA1000 added 100 shares of NYKE010426 to EQUITY
+Apr 13, 2025 8:07:03 PM dsms.DsmsServer addShare
+INFO: Admin NYKA1000 added 100 shares of NYKE010425 to EQUITY
+Apr 13, 2025 8:07:03 PM dsms.DsmsServer addShare
+INFO: Admin NYKA1000 added 100 shares of NYKE010425 to EQUITY
+Apr 13, 2025 8:07:03 PM dsms.DsmsServer addShare
+INFO: Admin NYKA1000 added 100 shares of NYKE010425 to EQUITY
+Apr 13, 2025 8:07:03 PM dsms.DsmsServer listShareAvailability
+INFO: Admin NYKA1000 requested share availability for EQUITY
+Apr 13, 2025 8:07:06 PM dsms.DsmsServer addShare
+INFO: Admin NYKA1000 added 100 shares of NYKE010425 to EQUITY
+Apr 13, 2025 8:07:06 PM dsms.DsmsServer addShare
+INFO: Admin NYKA1000 added 100 shares of NYKE010425 to EQUITY
+Apr 13, 2025 8:07:06 PM dsms.DsmsServer addShare
+INFO: Admin NYKA1000 added 100 shares of NYKE010425 to EQUITY
+Apr 13, 2025 8:07:06 PM dsms.DsmsServer addShare
+INFO: Admin NYKA1000 added 100 shares of NYKE010425 to EQUITY
+Apr 13, 2025 8:07:06 PM dsms.DsmsServer addShare
+INFO: Admin LONA1000 added 100 shares of LONB010426 to BONUS
+Apr 13, 2025 8:09:19 PM dsms.DsmsServer addShare
+INFO: Admin NYKA1000 added 100 shares of NYKE010425 to EQUITY
+Apr 13, 2025 8:09:19 PM dsms.DsmsServer addShare
+INFO: Admin NYKA1000 added 100 shares of NYKE010425 to EQUITY
+Apr 13, 2025 8:09:19 PM dsms.DsmsServer addShare
+INFO: Admin NYKA1000 added 100 shares of NYKE010426 to EQUITY
+Apr 13, 2025 8:09:19 PM dsms.DsmsServer addShare
+INFO: Admin NYKA1000 added 100 shares of NYKE010425 to EQUITY
+Apr 13, 2025 8:09:19 PM dsms.DsmsServer addShare
+INFO: Admin NYKA1000 added 100 shares of NYKE010425 to EQUITY
+Apr 13, 2025 8:09:19 PM dsms.DsmsServer addShare
+INFO: Admin NYKA1000 added 100 shares of NYKE010425 to EQUITY
+Apr 13, 2025 8:09:19 PM dsms.DsmsServer listShareAvailability
+INFO: Admin NYKA1000 requested share availability for EQUITY
+Apr 13, 2025 8:09:22 PM dsms.DsmsServer addShare
+INFO: Admin NYKA1000 added 100 shares of NYKE010425 to EQUITY
+Apr 13, 2025 8:09:22 PM dsms.DsmsServer addShare
+INFO: Admin NYKA1000 added 100 shares of NYKE010425 to EQUITY
+Apr 13, 2025 8:09:22 PM dsms.DsmsServer addShare
+INFO: Admin NYKA1000 added 100 shares of NYKE010425 to EQUITY
+Apr 13, 2025 8:09:22 PM dsms.DsmsServer addShare
+INFO: Admin NYKA1000 added 100 shares of NYKE010425 to EQUITY
+Apr 13, 2025 8:09:22 PM dsms.DsmsServer addShare
+INFO: Admin LONA1000 added 100 shares of LONB010426 to BONUS
+Apr 13, 2025 8:16:05 PM dsms.DsmsServer addShare
+INFO: Admin NYKA1000 added 100 shares of NYKE010425 to EQUITY
+Apr 13, 2025 8:16:05 PM dsms.DsmsServer addShare
+INFO: Admin NYKA1000 added 100 shares of NYKE010425 to EQUITY
+Apr 13, 2025 8:16:05 PM dsms.DsmsServer addShare
+INFO: Admin NYKA1000 added 100 shares of NYKE010426 to EQUITY
+Apr 13, 2025 8:16:05 PM dsms.DsmsServer addShare
+INFO: Admin NYKA1000 added 100 shares of NYKE010425 to EQUITY
+Apr 13, 2025 8:16:05 PM dsms.DsmsServer addShare
+INFO: Admin NYKA1000 added 100 shares of NYKE010425 to EQUITY
+Apr 13, 2025 8:16:05 PM dsms.DsmsServer addShare
+INFO: Admin NYKA1000 added 100 shares of NYKE010425 to EQUITY
+Apr 13, 2025 8:16:05 PM dsms.DsmsServer listShareAvailability
+INFO: Admin NYKA1000 requested share availability for EQUITY
+Apr 13, 2025 8:16:08 PM dsms.DsmsServer addShare
+INFO: Admin NYKA1000 added 100 shares of NYKE010425 to EQUITY
+Apr 13, 2025 8:16:08 PM dsms.DsmsServer addShare
+INFO: Admin NYKA1000 added 100 shares of NYKE010425 to EQUITY
+Apr 13, 2025 8:16:08 PM dsms.DsmsServer addShare
+INFO: Admin NYKA1000 added 100 shares of NYKE010425 to EQUITY
+Apr 13, 2025 8:16:08 PM dsms.DsmsServer addShare
+INFO: Admin NYKA1000 added 100 shares of NYKE010425 to EQUITY
+Apr 13, 2025 8:16:08 PM dsms.DsmsServer addShare
+INFO: Admin LONA1000 added 100 shares of LONB010426 to BONUS
+Apr 13, 2025 8:17:15 PM dsms.DsmsServer addShare
+INFO: Admin NYKA1000 added 100 shares of NYKE010425 to EQUITY
+Apr 13, 2025 8:17:15 PM dsms.DsmsServer addShare
+INFO: Admin NYKA1000 added 100 shares of NYKE010425 to EQUITY
+Apr 13, 2025 8:17:19 PM dsms.DsmsServer addShare
+INFO: Admin NYKA1000 added 100 shares of NYKE010425 to EQUITY
+Apr 13, 2025 8:17:19 PM dsms.DsmsServer addShare
+INFO: Admin NYKA1000 added 100 shares of NYKE010425 to EQUITY
+Apr 13, 2025 8:17:19 PM dsms.DsmsServer addShare
+INFO: Admin NYKA1000 added 100 shares of NYKE010426 to EQUITY
+Apr 13, 2025 8:17:19 PM dsms.DsmsServer addShare
+INFO: Admin NYKA1000 added 100 shares of NYKE010425 to EQUITY
+Apr 13, 2025 8:17:19 PM dsms.DsmsServer addShare
+INFO: Admin NYKA1000 added 100 shares of NYKE010425 to EQUITY
+Apr 13, 2025 8:17:19 PM dsms.DsmsServer addShare
+INFO: Admin NYKA1000 added 100 shares of NYKE010425 to EQUITY
+Apr 13, 2025 8:17:19 PM dsms.DsmsServer listShareAvailability
+INFO: Admin NYKA1000 requested share availability for EQUITY
+Apr 13, 2025 8:17:22 PM dsms.DsmsServer addShare
+INFO: Admin NYKA1000 added 100 shares of NYKE010425 to EQUITY
+Apr 13, 2025 8:17:22 PM dsms.DsmsServer addShare
+INFO: Admin NYKA1000 added 100 shares of NYKE010425 to EQUITY
+Apr 13, 2025 8:17:22 PM dsms.DsmsServer addShare
+INFO: Admin NYKA1000 added 100 shares of NYKE010425 to EQUITY
+Apr 13, 2025 8:17:22 PM dsms.DsmsServer addShare
+INFO: Admin NYKA1000 added 100 shares of NYKE010425 to EQUITY
+Apr 13, 2025 8:17:22 PM dsms.DsmsServer addShare
+INFO: Admin LONA1000 added 100 shares of LONB010426 to BONUS
+Apr 13, 2025 8:19:55 PM dsms.DsmsServer addShare
+INFO: Admin NYKA1000 added 100 shares of NYKE010425 to EQUITY
+Apr 13, 2025 8:19:55 PM dsms.DsmsServer addShare
+INFO: Admin NYKA1000 added 100 shares of NYKE010425 to EQUITY
+Apr 13, 2025 8:19:55 PM dsms.DsmsServer addShare
+INFO: Admin NYKA1000 added 100 shares of NYKE010426 to EQUITY
+Apr 13, 2025 8:19:55 PM dsms.DsmsServer addShare
+INFO: Admin NYKA1000 added 100 shares of NYKE010425 to EQUITY
+Apr 13, 2025 8:19:55 PM dsms.DsmsServer addShare
+INFO: Admin NYKA1000 added 100 shares of NYKE010425 to EQUITY
+Apr 13, 2025 8:19:55 PM dsms.DsmsServer addShare
+INFO: Admin NYKA1000 added 100 shares of NYKE010425 to EQUITY
+Apr 13, 2025 8:19:55 PM dsms.DsmsServer listShareAvailability
+INFO: Admin NYKA1000 requested share availability for EQUITY
+Apr 13, 2025 8:19:57 PM dsms.DsmsServer addShare
+INFO: Admin NYKA1000 added 100 shares of NYKE010425 to EQUITY
+Apr 13, 2025 8:19:57 PM dsms.DsmsServer addShare
+INFO: Admin NYKA1000 added 100 shares of NYKE010425 to EQUITY
+Apr 13, 2025 8:19:57 PM dsms.DsmsServer addShare
+INFO: Admin NYKA1000 added 100 shares of NYKE010425 to EQUITY
+Apr 13, 2025 8:19:57 PM dsms.DsmsServer addShare
+INFO: Admin NYKA1000 added 100 shares of NYKE010425 to EQUITY
+Apr 13, 2025 8:19:57 PM dsms.DsmsServer addShare
+INFO: Admin LONA1000 added 100 shares of LONB010426 to BONUS
+Apr 13, 2025 8:22:08 PM dsms.DsmsServer addShare
+INFO: Admin NYKA1000 added 100 shares of NYKE010425 to EQUITY
+Apr 13, 2025 8:22:08 PM dsms.DsmsServer addShare
+INFO: Admin NYKA1000 added 100 shares of NYKE010425 to EQUITY
+Apr 13, 2025 8:22:08 PM dsms.DsmsServer addShare
+INFO: Admin NYKA1000 added 100 shares of NYKE010426 to EQUITY
+Apr 13, 2025 8:22:08 PM dsms.DsmsServer addShare
+INFO: Admin NYKA1000 added 100 shares of NYKE010425 to EQUITY
+Apr 13, 2025 8:22:08 PM dsms.DsmsServer addShare
+INFO: Admin NYKA1000 added 100 shares of NYKE010425 to EQUITY
+Apr 13, 2025 8:22:08 PM dsms.DsmsServer addShare
+INFO: Admin NYKA1000 added 100 shares of NYKE010425 to EQUITY
+Apr 13, 2025 8:22:08 PM dsms.DsmsServer listShareAvailability
+INFO: Admin NYKA1000 requested share availability for EQUITY
+Apr 13, 2025 8:22:11 PM dsms.DsmsServer addShare
+INFO: Admin NYKA1000 added 100 shares of NYKE010425 to EQUITY
+Apr 13, 2025 8:22:11 PM dsms.DsmsServer addShare
+INFO: Admin NYKA1000 added 100 shares of NYKE010425 to EQUITY
+Apr 13, 2025 8:22:11 PM dsms.DsmsServer addShare
+INFO: Admin NYKA1000 added 100 shares of NYKE010425 to EQUITY
+Apr 13, 2025 8:22:11 PM dsms.DsmsServer addShare
+INFO: Admin NYKA1000 added 100 shares of NYKE010425 to EQUITY
+Apr 13, 2025 8:22:11 PM dsms.DsmsServer addShare
+INFO: Admin LONA1000 added 100 shares of LONB010426 to BONUS
