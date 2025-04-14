@@ -6,15 +6,17 @@ import javax.jws.WebMethod;
 @WebService(targetNamespace = "http://dsms/")
 public interface DsmsServerInterface {
 
+    // ADMIN Functions (only allowed for Admin IDs)
     @WebMethod
-    String addShare(String shareType, String shareID, int quantity);
+    String addShare(String adminID, String shareType, String shareID, int quantity);
 
     @WebMethod
-    String removeShare(String shareType, String shareID);
+    String removeShare(String adminID, String shareType, String shareID);
 
     @WebMethod
-    String listShareAvailability(String shareType);
+    String listShareAvailability(String adminID, String shareType);
 
+    // BUYER Functions (only allowed for Buyer IDs)
     @WebMethod
     String getShares(String buyerID);
 
@@ -36,7 +38,7 @@ public interface DsmsServerInterface {
     @WebMethod
     String reassignShare(String shareID, String shareType, String quantityStr);
 
-    // NEW: Replica State Sync Methods
+    // Replica State Sync Methods
     @WebMethod
     String getSystemState();
 
