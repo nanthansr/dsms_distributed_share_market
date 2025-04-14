@@ -1,5 +1,28 @@
-.DS_Store
-.idea/
-*.iml
-*.log
+# Ignore compiled Java classes
+*.class
 
+# IntelliJ project files
+*.iml
+.idea/
+
+# macOS metadata files
+.DS_Store
+
+# Log files
+*.log
+*.lck
+*.txt.[1-9]
+client_logs.txt*
+admin_logs.txt*
+transactions_logs.txt*
+
+# Shell history or temp scripts
+History
+*.sh~
+
+# Test command inputs (optional)
+test_commands.txt
+
+# Ignore output folders if used
+/out/
+/build/
