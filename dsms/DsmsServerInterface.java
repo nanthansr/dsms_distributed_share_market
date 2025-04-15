@@ -7,13 +7,13 @@ import javax.jws.WebMethod;
 public interface DsmsServerInterface {
 
     @WebMethod
-    String addShare(String shareType, String shareID, int quantity);
+    String addShare(String adminID,String shareType, String shareID, int quantity);
 
     @WebMethod
-    String removeShare(String shareType, String shareID);
+    String removeShare(String adminID, String shareType, String shareID);
 
     @WebMethod
-    String listShareAvailability(String shareType);
+    String listShareAvailability(String adminID,String shareType);
 
     @WebMethod
     String getShares(String buyerID);

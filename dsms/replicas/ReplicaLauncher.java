@@ -132,9 +132,9 @@ public class ReplicaLauncher {
         String[] args = params.split(" ");
         switch (method) {
             case "resetAndResyncFrom": return server.resetAndResyncFrom(args[0]);
-            case "addShare": return server.addShare(args[0], args[1], Integer.parseInt(args[2]));
-            case "removeShare": return server.removeShare(args[0], args[1]);
-            case "listShareAvailability": return server.listShareAvailability(args[0]);
+            case "addShare": return server.addShare(args[0], args[1], args[2], Integer.parseInt(args[3]));
+            case "removeShare": return server.removeShare(args[0], args[1],args[2]);
+            case "listShareAvailability": return server.listShareAvailability(args[0], args[1]);
             case "getShares": return server.getShares(args[0]);
             case "sellShare": return server.sellShare(args[0], args[1], Integer.parseInt(args[2]));
             case "purchaseShare": return server.purchaseShare(args[0], args[1], args[2], Integer.parseInt(args[3]));

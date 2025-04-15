@@ -4,6 +4,7 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.nio.charset.StandardCharsets;
+import java.util.Random;
 import java.util.Scanner;
 
 public class TestClient {
@@ -13,7 +14,7 @@ public class TestClient {
         Scanner sc = new Scanner(System.in);
         System.out.println("Test Client Ready.");
 
-        int sequenceId = 1; // 🔢 Ensures unique request ID for each message
+        int sequenceId = new Random().nextInt(10000) + 10000;
 
         while (true) {
             System.out.print("Enter request (method:params) or 'exit': ");

@@ -59,7 +59,8 @@ public class DsmsServer implements DsmsServerInterface {
 
     // ADDSHARE
     @Override
-    public String addShare(String type, String symbol, int quantity) {
+    public String addShare(String adminID,String type, String symbol, int quantity) {
+
         shareDatabase.computeIfAbsent(type.toUpperCase(), k -> new ConcurrentHashMap<>()).put(symbol, quantity);
         // .info logs the message with INFO level (which is the default level for the
         // logger)
@@ -70,7 +71,7 @@ public class DsmsServer implements DsmsServerInterface {
 
     // REMOVESHARE
     @Override
-    public String removeShare(String shareID, String shareType) {
+    public String removeShare(String adminID,String shareID, String shareType) {
         shareType = shareType.trim().toUpperCase();
         shareID = shareID.trim();
         if (!shareDatabase.containsKey(shareType) || !shareDatabase.get(shareType).containsKey(shareID)) {
@@ -83,7 +84,7 @@ public class DsmsServer implements DsmsServerInterface {
 
     // LISTSHARES
     @Override
-    public String listShareAvailability(String shareType) {
+    public String listShareAvailability(String adminID,String shareType) {
 
         // Get local availability
         StringBuilder availability = new StringBuilder();
